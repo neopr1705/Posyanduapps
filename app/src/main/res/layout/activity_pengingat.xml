@@ -21,32 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-    <!-- Judul -->
-    <!-- Deskripsi -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Notifikasi akan dikirim sesuai jadwal yang ditetapkan."
-        android:layout_marginBottom="16dp" />
-
-    <!-- Tombol untuk menambah pengingat -->
-    <Button
-        android:id="@+id/btnSetReminder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Setel Jadwal"
-        style="@style/ButtonStyle" />
-
-    <!-- Teks untuk menampilkan tanggal & waktu yang dipilih -->
-    <TextView
-        android:id="@+id/tvSelectedDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pilih tanggal dan waktu"
-        android:layout_marginTop="16dp"
-        android:textSize="16sp"/>
-
-    <!-- Header untuk daftar pengingat -->
+        <!-- Header untuk daftar pengingat -->
     <TextView
         android:id="@+id/tvJadwal"
         android:layout_width="match_parent"

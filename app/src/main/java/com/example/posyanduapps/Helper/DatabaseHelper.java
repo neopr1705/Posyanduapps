@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -44,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_ABSENSI_TABLE);
 
         // Tabel Alarm
-        String CREATE_ALARM_TABLE = "CREATE TABLE"+ TABLE_ALARM +"("
+        String CREATE_ALARM_TABLE = "CREATE TABLE " + TABLE_ALARM + "("
                 + COLUMN_ALARM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + COLUMN_ALARM_TANGGAL + " TEXT, "
                 + COLUMN_ALARM_JAM + " TEXT, "
@@ -56,7 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ABSENSI);
-        db.execSQL("DROP TABLE IF EXISTS alarms");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALARM);
         onCreate(db);
     }
 
@@ -129,34 +130,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Menyimpan data alarm
-    public boolean insertAlarm(String tanggal, String jam) {
+    public boolean insertAlarm(String tanggal, String jam, int status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ALARM_TANGGAL, tanggal);
         values.put(COLUMN_ALARM_JAM, jam);
-        values.put(COLUMN_ALARM_STATUS, 1); // Set status alarm aktif
+        values.put(COLUMN_ALARM_STATUS, status); // status alarm, 1 untuk aktif
 
-        long result = db.insert(TABLE_ALARM, null, values);
-        return result != -1; // Jika -1 berarti gagal
+        try {
+            long result = db.insert(TABLE_ALARM, null, values);
+            if (result == -1) {
+                Log.e("insertAlarm", "Insert failed: " + tanggal + ", " + jam + ", " + status);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            Log.e("insertAlarm", "Error inserting alarm: " + e.getMessage());
+            return false;
+        } finally {
+            db.close(); // Pastikan database selalu ditutup
+        }
+
+
+
     }
 
     // Mengambil semua data alarm
     public Cursor getAllAlarms() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM alarms", null);
+        return db.rawQuery("SELECT * FROM " + TABLE_ALARM, null);
     }
-
     // Mengambil alarm berdasarkan ID
     public Cursor getAlarmById(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM alarms WHERE id = ?", new String[]{String.valueOf(id)});
+        return db.rawQuery("SELECT * FROM " + TABLE_ALARM + " WHERE " + COLUMN_ALARM_ID + " = ?",
+                new String[]{String.valueOf(id)});
     }
 
     // Menghapus alarm berdasarkan ID
-    public boolean deleteAlarm(int id) {
+    public boolean deleteAlarm(int alarmId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        int rowsDeleted = db.delete("alarms", "id = ?", new String[]{String.valueOf(id)});
-        return rowsDeleted > 0;
+        // Menghapus data berdasarkan ID
+        int result = db.delete(TABLE_ALARM, COLUMN_ALARM_ID + " = ?", new String[]{String.valueOf(alarmId)});
+        return result > 0; // Mengembalikan true jika berhasil dihapus
+    }
+
+    // Mengupdate alarm berdasarkan ID
+    public boolean updateAlarm(int id, String tanggal, String jam, int status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_ALARM_TANGGAL, tanggal);
+        values.put(COLUMN_ALARM_JAM, jam);
+        values.put(COLUMN_ALARM_STATUS, status);
+
+        int rowsUpdated = db.update(TABLE_ALARM, values,
+                COLUMN_ALARM_ID + " = ?",
+                new String[]{String.valueOf(id)});
+        return rowsUpdated > 0; // Mengembalikan true jika ada yang terupdate
     }
 
 

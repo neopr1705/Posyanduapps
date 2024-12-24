@@ -114,7 +114,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
                         boolean isInserted = databaseHelper.insertAbsensi(nama, selectedTanggal, selectedHari, selectedJam, tempat);
                         if (isInserted) {
                             // Masukkan data alarm ke database
-                            boolean isAlarmInserted = databaseHelper.insertAlarm(selectedTanggal, selectedJam);
+                            boolean isAlarmInserted = databaseHelper.insertAlarm(selectedTanggal, selectedJam,1);
                             if (isAlarmInserted) {
                                 // Set Alarm
                                 setAlarm(selectedTanggal, selectedJam);

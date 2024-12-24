@@ -53,15 +53,11 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
         ivAddAbsensi.setOnClickListener(this);
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
-        // Inisialisasi elemen-elemen UI
-        btnSetReminder = findViewById(R.id.btnSetReminder);
-        tvSelectedDate = findViewById(R.id.tvSelectedDate);
+
         lvReminders = findViewById(R.id.lvReminders);
 
         ivReminder.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
 
-        // Set listener untuk tombol
-        btnSetReminder.setOnClickListener(this);
 
         // Inisialisasi DatabaseHelper dan ListView
         dbHelper = new DatabaseHelper(this);
