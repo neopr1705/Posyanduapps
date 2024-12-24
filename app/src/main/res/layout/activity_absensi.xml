@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F8FF"
     android:orientation="vertical">
 
     <!-- Header -->
@@ -31,7 +30,7 @@
                 android:hint="Nama Pasien"
                 android:backgroundTint="#4CAF50"
                 android:padding="10dp"
-                android:textColor="#333333"
+                android:textColor="@color/secondaryText"
                 android:textSize="16sp" />
 
             <!-- Pilih Tanggal -->
@@ -44,7 +43,7 @@
                 android:focusable="true"
                 android:padding="10dp"
                 android:background="#FFFFFF"
-                android:textColorHint="#4CAF50"
+                android:textColorHint="@color/ThemeText"
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:backgroundTint="#E0E0E0" />
@@ -59,7 +58,7 @@
                 android:focusable="true"
                 android:padding="10dp"
                 android:background="#FFFFFF"
-                android:textColorHint="#4CAF50"
+                android:textColorHint="@color/ThemeText"
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:backgroundTint="#E0E0E0" />
@@ -74,7 +73,7 @@
                 android:focusable="true"
                 android:padding="10dp"
                 android:background="#FFFFFF"
-                android:textColorHint="#4CAF50"
+                android:textColorHint="@color/ThemeText"
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:backgroundTint="#E0E0E0" />
@@ -96,8 +95,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Hadir"
-                android:textColor="#FFFFFF"
-                android:background="#FF9800"
+                style="@style/ButtonStyle"
                 android:padding="12dp"
                 android:textSize="16sp" />
 

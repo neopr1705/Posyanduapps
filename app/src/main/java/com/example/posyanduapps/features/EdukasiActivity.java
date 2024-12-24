@@ -45,7 +45,7 @@ public class EdukasiActivity extends Activity implements View.OnClickListener {
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
         recyclerViewSubkategori = findViewById(R.id.recyclerViewSubkategori);
-        recyclerViewSubkategori.setLayoutManager(new GridLayoutManager(this, 1));
+        recyclerViewSubkategori.setLayoutManager(new GridLayoutManager(this, 2));
         ivProfile.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
         // Initialize adapter and data
         subkategoriAdapter = new SubkategoriAdapter(getSubkategoriData());

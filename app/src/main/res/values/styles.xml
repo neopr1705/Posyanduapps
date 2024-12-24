@@ -9,7 +9,7 @@
 
     <!-- Style untuk EditText -->
     <style name="EditTextStyle">
-        <item name="android:backgroundTint">#4CAF50</item> <!-- Hijau untuk garis bawah -->
+        <item name="android:backgroundTint">@color/color3rd</item> <!-- Hijau untuk garis bawah -->
         <item name="android:padding">10dp</item>
         <item name="android:textColor">#333333</item>
         <item name="android:textSize">16sp</item>
@@ -29,7 +29,7 @@
 
     <!-- Style untuk Tombol -->
     <style name="ButtonStyle">
-        <item name="android:background">#FF9800</item> <!-- Warna oranye -->
+        <item name="android:background">@color/color4th</item> <!-- Warna oranye -->
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:padding">12dp</item>
         <item name="android:textSize">16sp</item>
