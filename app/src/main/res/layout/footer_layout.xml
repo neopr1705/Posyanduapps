@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:orientation="horizontal"
+    android:gravity="center">
+
+    <!-- Ikon Home -->
+    <ImageView
+        android:id="@+id/ivHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_home_24"
+        android:tint="#FFFFFF"
+        android:layout_margin="8dp"
+        android:layout_weight="1" />
+
+    <!-- Ikon Pengingat -->
+    <ImageView
+        android:id="@+id/ivReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_access_alarm_24"
+        android:tint="#FFFFFF"
+        android:layout_margin="8dp"
+        android:layout_weight="1" />
+
+    <!-- Ikon Tambah Absensi -->
+    <ImageView
+        android:id="@+id/ivAddAbsensi"
+        android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:src="@drawable/baseline_assignment_add_24"
+    android:tint="#FFFFFF"
+    android:layout_margin="8dp"
+    android:layout_weight="1" />
+
+    <!-- Ikon Profil -->
+    <ImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_book_24"
+        android:tint="#FFFFFF"
+        android:layout_margin="8dp"
+        android:layout_weight="1" />
+
+    <!-- Ikon Setting -->
+    <ImageView
+        android:id="@+id/ivSettings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/baseline_settings_24"
+        android:tint="#FFFFFF"
+        android:layout_margin="8dp"
+        android:layout_weight="1" />
+</LinearLayout>

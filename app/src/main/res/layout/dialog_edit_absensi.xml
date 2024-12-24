@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <!-- Header dengan Back Icon dan Judul -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="67dp"
+        android:paddingBottom="16dp">
+
+        <!-- Judul Header -->
+        <TextView
+            android:id="@+id/headerTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Edit Data"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <!-- Input Fields -->
+    <!-- Input Nama -->
+    <EditText
+        android:id="@+id/editNama"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nama Pasien"
+        android:backgroundTint="#4CAF50"
+        android:padding="10dp"
+        android:textColor="#333333"
+        android:textSize="16sp" />
+
+    <!-- Pilih Tanggal -->
+    <TextView
+        android:id="@+id/editTanggal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Pilih Tanggal"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="10dp"
+        android:background="#FFFFFF"
+        android:textColorHint="#4CAF50"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:backgroundTint="#E0E0E0" />
+
+    <!-- Pilih Hari -->
+    <TextView
+        android:id="@+id/editHari"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Pilih Hari"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="10dp"
+        android:background="#FFFFFF"
+        android:textColorHint="#4CAF50"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:backgroundTint="#E0E0E0" />
+
+    <!-- Pilih Jam -->
+    <TextView
+        android:id="@+id/editJam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Pilih Jam"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="10dp"
+        android:background="#FFFFFF"
+        android:textColorHint="#4CAF50"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:backgroundTint="#E0E0E0" />
+
+    <!-- Tempat Posyandu -->
+    <EditText
+        android:id="@+id/editTempat"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tempat Posyandu"
+        android:backgroundTint="#4CAF50"
+        android:padding="10dp"
+        android:textColor="#333333"
+        android:textSize="16sp" />
+</LinearLayout>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Mom Care</string>
+    <string name="str_Menu">Posyandu Apps</string>
+    <string name="str_AbsensiKehadiran">Absensi Kehadiran</string>
+    <string name="str_EduGizi">Edukasi untuk Ibu Hamil</string>
+    <string name="str_DataIbu">Data Ibu Saat Posyandu</string>
+    <string name="str_Pengingat">Pengingat Jadwal Posyandu</string>
+</resources>

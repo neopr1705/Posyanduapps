@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F8FF"
+    android:orientation="vertical">
+
+    <!-- Header -->
+    <include
+        layout="@layout/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/str_AbsensiKehadiran"/>
+
+    <!-- Konten Utama -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edtNama"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nama Pasien"
+                android:backgroundTint="#4CAF50"
+                android:padding="10dp"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <!-- Pilih Tanggal -->
+            <TextView
+                android:id="@+id/tvTanggal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pilih Tanggal"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="10dp"
+                android:background="#FFFFFF"
+                android:textColorHint="#4CAF50"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:backgroundTint="#E0E0E0" />
+
+            <!-- Pilih Hari -->
+            <TextView
+                android:id="@+id/tvHari"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pilih Hari"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="10dp"
+                android:background="#FFFFFF"
+                android:textColorHint="#4CAF50"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:backgroundTint="#E0E0E0" />
+
+            <!-- Pilih Jam -->
+            <TextView
+                android:id="@+id/tvJam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Pilih Jam"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="10dp"
+                android:background="#FFFFFF"
+                android:textColorHint="#4CAF50"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:backgroundTint="#E0E0E0" />
+
+            <!-- Tempat Posyandu -->
+            <EditText
+                android:id="@+id/edtTempat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tempat Posyandu"
+                android:backgroundTint="#4CAF50"
+                android:padding="10dp"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <!-- Tombol Hadir -->
+            <Button
+                android:id="@+id/btnHadir"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hadir"
+                android:textColor="#FFFFFF"
+                android:background="#FF9800"
+                android:padding="12dp"
+                android:textSize="16sp" />
+
+            <!-- Daftar Absensi -->
+            <ListView
+                android:id="@+id/lvAbsensi"
+                android:layout_width="match_parent"
+                android:layout_height="324dp"
+                android:layout_marginTop="20dp"
+                android:divider="#E0E0E0"
+                android:dividerHeight="1dp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Footer -->
+    <include
+        layout="@layout/footer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
+

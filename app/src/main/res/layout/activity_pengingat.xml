@@ -1,0 +1,76 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <!-- Header -->
+    <include
+        layout="@layout/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/str_AbsensiKehadiran"/>
+    <!-- Konten Utama -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+    <!-- Judul -->
+    <!-- Deskripsi -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notifikasi akan dikirim sesuai jadwal yang ditetapkan."
+        android:layout_marginBottom="16dp" />
+
+    <!-- Tombol untuk menambah pengingat -->
+    <Button
+        android:id="@+id/btnSetReminder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Setel Jadwal"
+        style="@style/ButtonStyle" />
+
+    <!-- Teks untuk menampilkan tanggal & waktu yang dipilih -->
+    <TextView
+        android:id="@+id/tvSelectedDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pilih tanggal dan waktu"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"/>
+
+    <!-- Header untuk daftar pengingat -->
+    <TextView
+        android:id="@+id/tvJadwal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Daftar Pengingat:"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- ListView untuk menampilkan pengingat dari database -->
+            <ListView
+                android:id="@+id/lvReminders"
+                android:layout_width="match_parent"
+                android:layout_height="412dp"
+                android:layout_weight="1"
+                android:divider="@android:color/darker_gray"
+                android:dividerHeight="1dp"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+    </ScrollView>
+    <!-- Footer -->
+    <include
+        layout="@layout/footer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

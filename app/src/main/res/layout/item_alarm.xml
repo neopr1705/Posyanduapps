@@ -1,0 +1,61 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Nama Alarm -->
+    <TextView
+        android:id="@+id/tvNamaAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Tanggal Alarm -->
+    <TextView
+        android:id="@+id/tvTanggalAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Hari Alarm -->
+    <TextView
+        android:id="@+id/tvHariAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Jam Alarm -->
+    <TextView
+        android:id="@+id/tvJamAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Tempat Alarm -->
+    <TextView
+        android:id="@+id/tvTempatAlarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"/>
+
+    <!-- Switch untuk mengaktifkan alarm -->
+    <Switch
+        android:id="@+id/swAktif"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

@@ -1,0 +1,140 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Header -->
+    <include
+        layout="@layout/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/str_Menu"/>
+
+    <!-- Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.6"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Status Kehamilan -->
+            <TextView
+                android:id="@+id/tvKehamilanStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Status Kehamilan"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimary"
+
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvTrimester"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Trimester 2"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+
+                android:layout_marginBottom="16dp" />
+
+            <!-- Progress Kehamilan -->
+            <ProgressBar
+                android:id="@+id/progressKehamilan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="45"
+                android:indeterminate="false"
+                android:progressDrawable="@drawable/progress_bar_style"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Pengingat Pemeriksaan Kesehatan -->
+            <TextView
+                android:id="@+id/tvPemeriksaanPengingat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pemeriksaan Kesehatan Berikutnya"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimary"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvPengingatDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Jadwal USG pada 20 Desember 2024"
+                android:textSize="16sp"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Edukasi untuk Ibu Hamil -->
+            <TextView
+                android:id="@+id/tvEdukasi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edukasi Kehamilan"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimary"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Daftar Edukasi -->
+            <LinearLayout
+                android:id="@+id/llEdukasiList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <!-- Edukasi item 1 -->
+                <TextView
+                    android:id="@+id/tvEdukasiItem1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tips Menjaga Kesehatan Selama Kehamilan"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:padding="12dp"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Edukasi item 2 -->
+                <TextView
+                    android:id="@+id/tvEdukasiItem2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mengenal Tanda-Tanda Bahaya Kehamilan"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/black"
+                    android:padding="12dp"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Tombol Akses Fitur Lainnya -->
+            <Button
+                android:id="@+id/btnLihatLaporan"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Lihat Laporan Kehamilan"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <!-- Footer -->
+    <include
+        layout="@layout/footer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

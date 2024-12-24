@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+        <color name="colorPrimary">#4CAF50</color> <!-- Hijau -->
+        <color name="colorAccent">#FF9800</color> <!-- Oranye -->
+        <color name="backgroundColor">#F0F8FF</color> <!-- Latar belakang cerah -->
+        <color name="textColor">#333333</color> <!-- Teks utama -->
+    <color name="primaryColor">#4CAF50</color> <!-- Hijau lembut -->
+    <color name="primaryLight">#C8E6C9</color> <!-- Hijau pastel -->
+    <color name="primaryDark">#388E3C</color> <!-- Hijau tua -->
+    <color name="secondaryText">#757575</color> <!-- Abu-abu -->
+    <color name="primaryText">#212121</color> <!-- Hitam -->
+    <color name="softBlue">#5B6C8A</color>  <!-- Biru Muda -->
+    <color name="progress_color">#4CAF50</color> <!-- Hijau -->
+    <color name="progress_color_warning">#FF9800</color> <!-- Kuning -->
+    <color name="progress_color_critical">#F44336</color> <!-- Merah -->
+</resources>
