@@ -44,8 +44,9 @@ public class EdukasiActivity extends Activity implements View.OnClickListener {
         ivAddAbsensi.setOnClickListener(this);
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
+
         recyclerViewSubkategori = findViewById(R.id.recyclerViewSubkategori);
-        recyclerViewSubkategori.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerViewSubkategori.setLayoutManager(new GridLayoutManager(this, 1));
         ivProfile.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
         // Initialize adapter and data
         subkategoriAdapter = new SubkategoriAdapter(getSubkategoriData());
@@ -54,14 +55,31 @@ public class EdukasiActivity extends Activity implements View.OnClickListener {
 
     private List<Subkategori> getSubkategoriData() {
         List<Subkategori> subkategoriList = new ArrayList<>();
-        subkategoriList.add(new Subkategori("PERAWATAN SEHARI-HARI IBU HAMIL", R.drawable.foreground));
-        subkategoriList.add(new Subkategori("YANG HARUS DIHINDARI IBU HAMIL ", R.drawable.ic_launcher_foreground));
-        subkategoriList.add(new Subkategori("PORSI MAKAN DAN MINUM IBU HAMIL", R.drawable.ic_launcher_foreground));
-        subkategoriList.add(new Subkategori("AKTIVITAS FISIK DAN LATIHAN FISIK IBU HAMIL", R.drawable.ic_launcher_foreground));
-        subkategoriList.add(new Subkategori("TANDA BAHAYA KEHAMILAN", R.drawable.ic_launcher_foreground));
-        subkategoriList.add(new Subkategori("MASALAH LAIN PADA KEHAMILAN", R.drawable.ic_launcher_foreground));
-        subkategoriList.add(new Subkategori("PERSIAPAN MELAHIRKAN", R.drawable.ic_launcher_foreground));
-        subkategoriList.add(new Subkategori("TANDA AWAL PERSALINAN", R.drawable.ic_launcher_foreground));
+        subkategoriList.add(new Subkategori("PERAWATAN SEHARI-HARI IBU HAMIL",
+                "Panduan lengkap perawatan sehari-hari ibu hamil untuk menjaga kesehatan dan kenyamanan selama masa kehamilan",
+                R.drawable.perawatan_sehari_hari));
+        subkategoriList.add(new Subkategori("YANG HARUS DIHINDARI IBU HAMIL",
+                "Hal-hal yang perlu dihindari oleh ibu hamil demi menjaga kesehatan ibu dan janin selama masa kehamilan",
+                R.drawable.warning_100dp_e8eaed_fill0_wght400_grad0_opsz48));
+        subkategoriList.add(new Subkategori("PORSI MAKAN DAN MINUM IBU HAMIL",
+                "Panduan tentang porsi makan dan minum yang seimbang untuk ibu hamil agar mendapatkan nutrisi yang cukup",
+                R.drawable.ic_makan_edukasi));
+        subkategoriList.add(new Subkategori("AKTIVITAS FISIK DAN LATIHAN FISIK IBU HAMIL",
+                "Jenis aktivitas fisik dan latihan yang aman untuk ibu hamil guna menjaga kebugaran tubuh dan persiapan persalinan",
+                R.drawable.aktivitas));
+        subkategoriList.add(new Subkategori("TANDA BAHAYA KEHAMILAN",
+                "Tanda-tanda bahaya yang perlu segera diperhatikan oleh ibu hamil agar dapat mendapatkan penanganan medis tepat waktu",
+                R.drawable.tanda_bahaya));
+        subkategoriList.add(new Subkategori("MASALAH LAIN PADA KEHAMILAN",
+                "Masalah-masalah kesehatan lain yang sering terjadi selama kehamilan dan cara mengatasinya untuk kesehatan ibu dan bayi",
+                R.drawable.masalah_lain));
+        subkategoriList.add(new Subkategori("PERSIAPAN MELAHIRKAN",
+                "Panduan persiapan melahirkan untuk ibu hamil agar proses persalinan berjalan lancar dan meminimalkan risiko komplikasi",
+                R.drawable.persiapan_melahirkan));
+        subkategoriList.add(new Subkategori("TANDA AWAL PERSALINAN",
+                "Tanda-tanda awal persalinan yang harus dikenali oleh ibu hamil untuk mempersiapkan diri menghadapi kelahiran",
+                R.drawable.tandawal));
+
         // Add more categories as needed
         return subkategoriList;
     }

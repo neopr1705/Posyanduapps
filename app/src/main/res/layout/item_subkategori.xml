@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="150dp"
     android:layout_weight="1"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="18dp"
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
@@ -17,19 +17,38 @@
 
     <ImageView
         android:id="@+id/ivIcon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:src="@drawable/ic_launcher_foreground"
+        android:layout_width="124dp"
+        android:layout_height="match_parent"
         android:contentDescription="Icon Subkategori"
-       />
-
+        android:src="@drawable/ic_launcher_foreground"
+        android:layout_margin="4dp" />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <!-- Name of the subcategory -->
     <TextView
         android:id="@+id/tvNamaSubkategori"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:text="Subkategori"
-        android:textSize="12sp"
-        android:layout_marginTop="8dp"
-        android:gravity="center" />
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_margin="4dp" />
+
+    <TextView
+        android:id="@+id/tvIntroSubkategori"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="ini adalah konten subkategori"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:layout_marginTop="1.5dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="4dp"/>
+
+</LinearLayout>
+
 </LinearLayout>

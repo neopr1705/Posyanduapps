@@ -25,13 +25,11 @@
 
 
     <!-- Content -->
-    <TextView
-        android:id="@+id/tvContent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Konten default untuk subkategori ini akan muncul di sini."
-        android:textSize="16sp"
-        android:lineSpacingExtra="8dp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewContent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
         </LinearLayout>
     </ScrollView>
 

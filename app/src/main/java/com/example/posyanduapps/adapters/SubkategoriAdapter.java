@@ -35,7 +35,7 @@ public class SubkategoriAdapter extends RecyclerView.Adapter<SubkategoriAdapter.
         Subkategori subkategori = subkategoriList.get(position);
         holder.tvNamaSubkategori.setText(subkategori.getNama());
         holder.ivIcon.setImageResource(subkategori.getIconResId());
-
+        holder.tvIntroSubkategori.setText(subkategori.getKeterangan());
         // Handle item click
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
@@ -52,12 +52,14 @@ public class SubkategoriAdapter extends RecyclerView.Adapter<SubkategoriAdapter.
 
     static class SubkategoriViewHolder extends RecyclerView.ViewHolder {
         ImageView ivIcon;
-        TextView tvNamaSubkategori;
+        TextView tvNamaSubkategori,tvIntroSubkategori;
 
         public SubkategoriViewHolder(@NonNull View itemView) {
             super(itemView);
             ivIcon = itemView.findViewById(R.id.ivIcon);
             tvNamaSubkategori = itemView.findViewById(R.id.tvNamaSubkategori);
+            tvIntroSubkategori = itemView.findViewById(R.id.tvIntroSubkategori);
+
         }
     }
 }
