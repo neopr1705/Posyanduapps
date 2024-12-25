@@ -2,60 +2,75 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="16dp"
-    android:background="?android:attr/selectableItemBackground">
+    >
 
-    <!-- Nama Alarm -->
-    <TextView
-        android:id="@+id/tvNamaAlarm"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginRight="10dp"
+        android:orientation="vertical"
+        android:padding="8dp">
+        <!-- Nama Alarm -->
+        <TextView
+            android:id="@+id/tvNamaAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text=""
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <!-- Tanggal Alarm -->
-    <TextView
-        android:id="@+id/tvTanggalAlarm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="16sp"
-        android:layout_marginBottom="4dp"/>
+        <!-- Tanggal Alarm -->
+        <TextView
+            android:id="@+id/tvTanggalAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text=""
+            android:textSize="16sp" />
 
-    <!-- Hari Alarm -->
-    <TextView
-        android:id="@+id/tvHariAlarm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="16sp"
-        android:layout_marginBottom="4dp"/>
+        <!-- Hari Alarm -->
+        <TextView
+            android:id="@+id/tvHariAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text=""
+            android:textSize="16sp" />
 
-    <!-- Jam Alarm -->
-    <TextView
-        android:id="@+id/tvJamAlarm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="16sp"
-        android:layout_marginBottom="4dp"/>
+        <!-- Jam Alarm -->
+        <TextView
+            android:id="@+id/tvJamAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text=""
+            android:textSize="16sp" />
 
-    <!-- Tempat Alarm -->
-    <TextView
-        android:id="@+id/tvTempatAlarm"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp"/>
-
+        <!-- Tempat Alarm -->
+        <TextView
+            android:id="@+id/tvTempatAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text=""
+            android:textSize="16sp" />
+    </LinearLayout>
     <!-- Switch untuk mengaktifkan alarm -->
-    <Switch
-        android:id="@+id/swAktif"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_margin="4dp">
+
+        <Switch
+            android:id="@+id/swAktif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+    </LinearLayout>
 
 </LinearLayout>

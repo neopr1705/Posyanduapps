@@ -2,9 +2,10 @@
 <!-- res/layout/item_absensi.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="10dp"
+    android:gravity="center"
     android:background="?android:attr/selectableItemBackground">
 
     <TextView
@@ -20,13 +21,21 @@
         android:id="@+id/btnEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/roundtangle_edit_delete_bg"
         android:src="@android:drawable/ic_menu_edit"
-        android:contentDescription="Edit" />
+        android:contentDescription="Edit"
+        android:layout_margin="4dp"
+
+        />
+
 
     <ImageButton
         android:id="@+id/btnDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@android:drawable/ic_menu_delete"
-        android:contentDescription="Delete" />
+        android:background="@drawable/roundtangle_edit_delete_bg"
+        android:contentDescription="Delete"
+        android:layout_margin="4dp"
+        />
 </LinearLayout>

@@ -78,30 +78,31 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == btnSetReminder.getId()) {
-            // Implementasikan logika untuk memilih pengingat
-        }
-
-        // Dapatkan aksi klik jika diperlukan
+                // Dapatkan aksi klik jika diperlukan
         if(v.getId() == ivHome.getId()){
             intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivAddAbsensi.getId()) {
             intent = new Intent(this, AbsensiActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivReminder.getId()) {
             intent = new Intent(this, PengingatActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivSettings.getId()) {
             intent = new Intent(this, DataIbuActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivProfile.getId()) {
             intent = new Intent(this, EdukasiActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
     }
 
@@ -119,7 +120,6 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
                 String tempat = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_TEMPAT));
 
 
-                // Gabungkan semua data dalam format yang sesuai
                 // Pastikan Hari dan Tempat hanya ditambahkan sekali
                 jam = jam.replace(":", ".");
                 String reminderData = "Nama: " + name + "; Tanggal: " + tanggal + "; Hari: " + hari + "; Tempat: " + tempat + "; Jam: " + jam;

@@ -54,10 +54,14 @@ public class EdukasiActivity extends Activity implements View.OnClickListener {
 
     private List<Subkategori> getSubkategoriData() {
         List<Subkategori> subkategoriList = new ArrayList<>();
-        subkategoriList.add(new Subkategori("Gizi untuk Ibu Hamil", R.drawable.foreground));
-        subkategoriList.add(new Subkategori("Imunisasi", R.drawable.ic_launcher_foreground));
-        subkategoriList.add(new Subkategori("Perawatan Bayi", R.drawable.ic_launcher_foreground));
-        subkategoriList.add(new Subkategori("Kesehatan Anak", R.drawable.ic_launcher_foreground));
+        subkategoriList.add(new Subkategori("PERAWATAN SEHARI-HARI IBU HAMIL", R.drawable.foreground));
+        subkategoriList.add(new Subkategori("YANG HARUS DIHINDARI IBU HAMIL ", R.drawable.ic_launcher_foreground));
+        subkategoriList.add(new Subkategori("PORSI MAKAN DAN MINUM IBU HAMIL", R.drawable.ic_launcher_foreground));
+        subkategoriList.add(new Subkategori("AKTIVITAS FISIK DAN LATIHAN FISIK IBU HAMIL", R.drawable.ic_launcher_foreground));
+        subkategoriList.add(new Subkategori("TANDA BAHAYA KEHAMILAN", R.drawable.ic_launcher_foreground));
+        subkategoriList.add(new Subkategori("MASALAH LAIN PADA KEHAMILAN", R.drawable.ic_launcher_foreground));
+        subkategoriList.add(new Subkategori("PERSIAPAN MELAHIRKAN", R.drawable.ic_launcher_foreground));
+        subkategoriList.add(new Subkategori("TANDA AWAL PERSALINAN", R.drawable.ic_launcher_foreground));
         // Add more categories as needed
         return subkategoriList;
     }
@@ -68,22 +72,27 @@ public class EdukasiActivity extends Activity implements View.OnClickListener {
         if(v.getId() == ivHome.getId()){
             intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivAddAbsensi.getId()) {
             intent = new Intent(this, AbsensiActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivReminder.getId()) {
             intent = new Intent(this, PengingatActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivSettings.getId()) {
             intent = new Intent(this, DataIbuActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivProfile.getId()) {
             intent = new Intent(this, EdukasiActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
     }
 }

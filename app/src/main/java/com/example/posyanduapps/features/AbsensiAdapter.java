@@ -186,6 +186,7 @@ public class AbsensiAdapter extends android.widget.BaseAdapter {
 
         // Tampilkan DatePickerDialog
         DatePickerDialog datePickerDialog = new DatePickerDialog(context,
+                R.style.CustomDatePicker,
                 (view, year, month, dayOfMonth) -> {
                     // Format tanggal yang dipilih
                     String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
@@ -229,6 +230,7 @@ public class AbsensiAdapter extends android.widget.BaseAdapter {
     private void showTimePickerDialog(TextView tvJam) {
         // Buat TimePickerDialog dan set listener
         TimePickerDialog timePickerDialog = new TimePickerDialog(context,
+                R.style.CustomDatePicker,
                 (view, hourOfDay, minute) -> {
                     String selectedTime = hourOfDay + ":" + (minute < 10 ? "0" + minute : minute);
                     tvJam.setText(selectedTime);

@@ -169,6 +169,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     private void showDatePickerDialog() {
         Calendar calendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                R.style.CustomDatePicker,
                 (view, year, month, dayOfMonth) -> {
                     // Perbarui kalender dengan tanggal yang dipilih
                     calendar.set(year, month, dayOfMonth);
@@ -212,6 +213,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         // Dialog untuk memilih jam
         Calendar calendar = Calendar.getInstance();
         TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                R.style.CustomDatePicker,
                 (view, hourOfDay, minute) -> {
                     selectedJam = hourOfDay + ":" + minute;
                     tvJam.setText(selectedJam);
@@ -250,22 +252,27 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         if(v.getId() == ivHome.getId()){
             intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivAddAbsensi.getId()) {
             intent = new Intent(this, AbsensiActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivReminder.getId()) {
             intent = new Intent(this, PengingatActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivSettings.getId()) {
             intent = new Intent(this, DataIbuActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivProfile.getId()) {
             intent = new Intent(this, EdukasiActivity.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
     }
 }

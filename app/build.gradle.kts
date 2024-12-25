@@ -51,6 +51,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
+    implementation ("com.google.android.material:material:1.10.0")
     implementation(libs.androidx.constraintlayout)  // Or the latest version available
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

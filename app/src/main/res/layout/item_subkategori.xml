@@ -2,22 +2,23 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="150dp"
+    android:layout_weight="1"
     android:orientation="vertical"
     android:padding="18dp"
     android:paddingTop="5dp"
     android:paddingBottom="5dp"
     android:gravity="center"
     android:background="@drawable/border_top_bottom"
-
+    android:layout_margin="10dp"
     >
 
     <!-- Image for subcategory -->
 
     <ImageView
         android:id="@+id/ivIcon"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:src="@drawable/ic_launcher_foreground"
         android:contentDescription="Icon Subkategori"
        />
@@ -25,10 +26,10 @@
     <!-- Name of the subcategory -->
     <TextView
         android:id="@+id/tvNamaSubkategori"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:text="Subkategori"
-        android:textSize="16sp"
+        android:textSize="12sp"
         android:layout_marginTop="8dp"
         android:gravity="center" />
 </LinearLayout>

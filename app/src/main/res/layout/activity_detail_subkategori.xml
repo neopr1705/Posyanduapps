@@ -40,7 +40,7 @@
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:background="@color/colorAccent"
+        android:background="@drawable/button_base"
         android:padding="12dp"
         android:text="Kembali"
         android:textColor="@android:color/white"

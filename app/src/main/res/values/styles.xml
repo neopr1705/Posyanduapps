@@ -42,5 +42,13 @@
         <item name="android:layout_marginTop">20dp</item>
     </style>
 
+    <style name="CustomDatePicker" parent="Theme.MaterialComponents.Light.Dialog">
+        <!-- Warna latar belakang dialog -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColorSecondary">@color/softBlue</item>
+    </style>
 
 </resources>

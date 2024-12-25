@@ -123,8 +123,7 @@
                 android:id="@+id/btnLihatLaporan"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="32dp"
-                android:backgroundTint="@color/color4th"
+                android:background="@drawable/button_base"
                 android:text="Lihat Laporan Kehamilan"
                 android:textColor="@android:color/white" />
 

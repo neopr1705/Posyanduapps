@@ -35,7 +35,7 @@
             <ListView
                 android:id="@+id/lvReminders"
                 android:layout_width="match_parent"
-                android:layout_height="412dp"
+                android:layout_height="560dp"
                 android:layout_weight="1"
                 android:divider="@android:color/darker_gray"
                 android:dividerHeight="1dp"
