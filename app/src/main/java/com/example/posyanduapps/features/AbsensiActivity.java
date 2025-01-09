@@ -1,9 +1,7 @@
 package com.example.posyanduapps.features;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.app.DatePickerDialog;
@@ -20,10 +18,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Intent;
+
 import com.example.posyanduapps.MainActivity;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.Helper.DatabaseHelper;
+import com.example.posyanduapps.adapters.AbsensiAdapter;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.concurrent.ExecutorService;
@@ -50,7 +50,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_absensi);
         tvTitle = findViewById(R.id.tvTitle);
-        tvTitle.setText(getText(R.string.str_Menu));
+        tvTitle.setText(getText(R.string.str_AbsensiKehadiran));
         //footer
         ivHome = findViewById(R.id.ivHome);
         ivReminder = findViewById(R.id.ivReminder);

@@ -4,6 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import android.app.Application;
+import com.google.firebase.FirebaseApp;
+
 import com.example.posyanduapps.R;
 import android.app.Activity;
 import android.os.Bundle;
@@ -23,7 +27,7 @@ public class SplashScreenActivity extends Activity {
         // Handler untuk menjalankan kode setelah timeout
         new Handler().postDelayed(() -> {
             // Intent ke MainActivity
-            Intent intent = new Intent(SplashScreenActivity.this, MainActivity.class);
+            Intent intent = new Intent(SplashScreenActivity.this, LoginActivity.class);
             startActivity(intent);
             finish(); // Menutup SplashScreenActivity agar tidak bisa kembali ke sini
         }, timeout);

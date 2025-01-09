@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -52,7 +53,12 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation ("com.google.android.material:material:1.10.0")
-    implementation(libs.androidx.constraintlayout)  // Or the latest version available
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.firebase.database)  // Or the latest version available
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -10,7 +10,7 @@ import android.util.Log;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "posyandu.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Kolom-kolom untuk tabel absensi
     public static final String TABLE_ABSENSI = "absensi";
@@ -27,6 +27,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ALARM_TANGGAL = "tanggal";
     public static final String COLUMN_ALARM_JAM = "jam";
     public static final String COLUMN_ALARM_STATUS = "status";  // Status aktif/alarm terpasang
+
+    // Kolom-kolom untuk tabel user
+    public static final String TABLE_USER = "user";
+    public static final String COLUMN_USER_ID = "id";
+    public static final String COLUMN_USER_USERNAME = "username";
+    public static final String COLUMN_USER_PASSWORD = "password";
+    public static final String COLUMN_USER_NAMA_LENGKAP = "nama_lengkap";
+    public static final String COLUMN_USER_ALAMAT_LENGKAP = "alamat_lengkap";
+    public static final String COLUMN_USER_TANGGAL_LAHIR = "tanggal_lahir";
+    public static final String COLUMN_USER_USIA_KEHAMILAN = "usia_kehamilan";
+    public static final String COLUMN_USER_NOMOR_HP = "nomor_hp";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -52,6 +63,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_ALARM_STATUS + " INTEGER" // 0 = Inaktif, 1 = Aktif
                 + ")";
         db.execSQL(CREATE_ALARM_TABLE);
+
+        // Tabel User
+        String CREATE_USER_TABLE = "CREATE TABLE " + TABLE_USER + "("
+                + COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + COLUMN_USER_NAMA_LENGKAP + " TEXT, "
+                + COLUMN_USER_ALAMAT_LENGKAP + " TEXT, "
+                + COLUMN_USER_TANGGAL_LAHIR + " TEXT, "
+                + COLUMN_USER_USIA_KEHAMILAN + " TEXT, "
+                + COLUMN_USER_NOMOR_HP + " TEXT, "
+                + COLUMN_USER_USERNAME + " TEXT UNIQUE, "  // Menambahkan username
+                + COLUMN_USER_PASSWORD + " TEXT"          // Menambahkan password
+                + ")";
+        db.execSQL(CREATE_USER_TABLE);
     }
 
     @Override
@@ -188,6 +212,60 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)});
         return rowsUpdated > 0; // Mengembalikan true jika ada yang terupdate
     }
+
+    // Menyimpan data user
+    public boolean insertUser(String namaLengkap, String alamatLengkap, String tanggalLahir, String usiaKehamilan, String nomorHp, String username, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_USER_NAMA_LENGKAP, namaLengkap);
+        values.put(COLUMN_USER_ALAMAT_LENGKAP, alamatLengkap);
+        values.put(COLUMN_USER_TANGGAL_LAHIR, tanggalLahir);
+        values.put(COLUMN_USER_USIA_KEHAMILAN, usiaKehamilan);
+        values.put(COLUMN_USER_NOMOR_HP, nomorHp);
+        values.put(COLUMN_USER_USERNAME, username);  // Menambahkan username
+        values.put(COLUMN_USER_PASSWORD, password);  // Menambahkan password
+
+        long result = db.insert(TABLE_USER, null, values);
+        db.close(); // Pastikan untuk menutup database setelah operasi selesai
+        return result != -1; // Jika -1 berarti gagal
+    }
+
+
+    // Fungsi untuk mengambil semua data user
+    public Cursor getAllUsers() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_USER, null);
+    }
+
+    // Fungsi untuk mendapatkan user berdasarkan username
+    public Cursor getUserByUsername(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE " + COLUMN_USER_USERNAME + " = ?",
+                new String[]{username});
+    }
+
+    // Fungsi untuk menghapus user berdasarkan nama pengguna
+    public boolean deleteUser(String userName) {
+        SQLiteDatabase db = this.getWritableDatabase(); // Mendapatkan writable database
+        int result = db.delete(TABLE_USER, COLUMN_USER_USERNAME + " = ?", new String[]{userName});
+        db.close(); // Menutup database setelah operasi selesai
+
+        // Jika hasil penghapusan lebih besar dari 0, berarti berhasil
+        return result > 0;
+    }
+
+    // Fungsi untuk memeriksa username dan password untuk login
+    public boolean authenticateUser(String username, String password) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USER + " WHERE "
+                        + COLUMN_USER_USERNAME + " = ? AND "
+                        + COLUMN_USER_PASSWORD + " = ?",
+                new String[]{username, password});
+        boolean userExists = cursor.getCount() > 0;
+        cursor.close();
+        return userExists;
+    }
+
 
 
 

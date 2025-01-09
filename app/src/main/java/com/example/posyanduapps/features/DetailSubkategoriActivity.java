@@ -68,7 +68,7 @@ public class DetailSubkategoriActivity extends Activity {
                         Arrays.asList(
                                 R.drawable.edu_1_1,
                                 R.drawable.perawatan_2,
-                                R.drawable.screenshot_2024_12_25_211740,
+                                R.drawable.perawatan_3,
                                 R.drawable.perawatan_4,
                                 -1
                                 )

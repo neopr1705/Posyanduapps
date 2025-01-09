@@ -5,4 +5,8 @@
     <string name="str_EduGizi">Edukasi untuk Ibu Hamil</string>
     <string name="str_DataIbu">Data Ibu Saat Posyandu</string>
     <string name="str_Pengingat">Pengingat Jadwal Posyandu</string>
+    <string name="str_Login">Login</string>
+    <string name="str_Daftar">Register</string>
+    <string name="str_username">Tap to Enter Username</string>
+    <string name="str_password">Tap to Enter Password</string>
 </resources>

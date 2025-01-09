@@ -32,6 +32,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
+        <activity android:name=".RegisterActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
         <activity android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
@@ -50,6 +56,10 @@
         <!-- Aktivitas untuk Data Ibu -->
         <activity
             android:name=".features.DataIbuActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".features.MonitorUsersActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
 

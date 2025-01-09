@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 import com.example.posyanduapps.MainActivity;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.Helper.DatabaseHelper;
+import com.example.posyanduapps.adapters.ReminderAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
