@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import com.example.posyanduapps.Helper.HeaderIconHelper;
 
 import com.example.posyanduapps.features.*;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +34,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Ambil referensi ke layout header
+        View headerLayout = findViewById(R.id.header_layout);
+        // Inisialisasi HeaderIconHelper
+        new HeaderIconHelper(this, headerLayout);
 
         tvTitle = findViewById(R.id.tvTitle);
         tvstatusKehamilan = findViewById(R.id.tvKehamilanStatus);

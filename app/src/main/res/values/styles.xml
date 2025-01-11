@@ -51,4 +51,25 @@
         <item name="android:textColorSecondary">@color/softBlue</item>
     </style>
 
+    <!-- Style untuk Rounded Corner -->
+    <style name="RoundedDialog">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
+    <style name="AppTemaDialog" parent="Theme.Material3.Light.Dialog.Alert">
+        <!-- Warna latar belakang sesuai dengan ColorAccent -->
+        <item name="colorSurface">@color/white</item>
+        <!-- Warna teks utama (putih) -->
+        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="colorOnSurface">@color/colorAccent</item>
+
+        <!-- Efek ujung yang bulat -->
+        <item name="shapeAppearanceSmallComponent">@style/RoundedDialog</item>
+    </style>
+
+
+
+
+
 </resources>

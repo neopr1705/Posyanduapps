@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.MainActivity;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.adapters.SubkategoriAdapter;
@@ -30,6 +31,9 @@ public class EdukasiActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edukasi);
+        View headerLayout = findViewById(R.id.header_layout);
+        // Inisialisasi HeaderIconHelper
+        new HeaderIconHelper(this, headerLayout);
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText(getText(R.string.str_EduGizi));
         //footer

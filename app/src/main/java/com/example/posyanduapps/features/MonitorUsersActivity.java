@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,6 +26,7 @@ public class MonitorUsersActivity extends Activity {
     private ListView userListView;
     private UserAdapter userAdapter;
     private TextView tvTitle;
+    private ImageView ivLogout;
     private Button btnKembali;
     private ArrayList<User> userList = new ArrayList<>();
     private String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
@@ -35,6 +38,9 @@ public class MonitorUsersActivity extends Activity {
         setContentView(R.layout.activity_monitor_user);
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText("MONITOR USER");
+        ivLogout = findViewById(R.id.ivLogout);
+        ivLogout.setVisibility(View.GONE);
+
 
         userListView = findViewById(R.id.userListView);
         btnKembali = findViewById(R.id.btnKembali);

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.LoginActivity;
 import com.example.posyanduapps.MainActivity;
 import com.example.posyanduapps.R;
@@ -66,6 +67,8 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_absensi);
+        // Ambil referensi ke layout header
+
         // Mengambil currentUser dari SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
         currentUser = sharedPreferences.getString("currentNama", null);  // null jika tidak ada
@@ -108,7 +111,9 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         // Ganti ArrayAdapter dengan AbsensiAdapter
         customAdapter = new AbsensiAdapter(this, absensiList);
         lvAbsensi.setAdapter(customAdapter);
-
+        View headerLayout = findViewById(R.id.header_layout);
+        // Inisialisasi HeaderIconHelper
+        new HeaderIconHelper(this, headerLayout);
         btnHadir.setOnClickListener(v -> {
             tambahHadir();
         });
