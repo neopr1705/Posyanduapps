@@ -1,15 +1,19 @@
 package com.example.posyanduapps.features;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,10 +23,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.example.posyanduapps.LoginActivity;
 import com.example.posyanduapps.MainActivity;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.Helper.DatabaseHelper;
 import com.example.posyanduapps.adapters.AbsensiAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,10 +57,20 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     private Handler mainHandler; // Handler untuk kembali ke thread utama
     private Intent intent;
 
+    private String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+    private FirebaseDatabase database=FirebaseDatabase.getInstance(url);
+    private DatabaseReference nodeDb;
+    private String currentUser="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_absensi);
+        // Mengambil currentUser dari SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        currentUser = sharedPreferences.getString("currentNama", null);  // null jika tidak ada
+
+
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText(getText(R.string.str_AbsensiKehadiran));
         //footer
@@ -68,6 +90,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         ivHome.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
         // Inisialisasi komponen
         edtNama = findViewById(R.id.edtNama);
+        edtNama.setHint(currentUser);
         edtTempat = findViewById(R.id.edtTempat);
         btnHadir = findViewById(R.id.btnHadir);
         lvAbsensi = findViewById(R.id.lvAbsensi);

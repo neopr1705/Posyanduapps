@@ -1,17 +1,26 @@
 package com.example.posyanduapps.models;
+import android.util.Log;
+
+import com.google.firebase.database.PropertyName;
 
 public class User {
-    private int id;
+    private String id;
+    @PropertyName("nama_lengkap")
     private String namaLengkap;
+    @PropertyName("alamat_lengkap")
     private String alamatLengkap;
+    @PropertyName("tanggal_lahir")
     private String tanggalLahir;
+    @PropertyName("usia_kehamilan")
     private String usiaKehamilan;
+    @PropertyName("nomor_hp")
     private String nomorHp;
     private String username;
     private String password;
 
-    public User(int id, String namaLengkap, String alamatLengkap, String tanggalLahir, String usiaKehamilan, String nomorHp, String username, String password) {
-        this.id = id;
+    // Konstruktor tanpa argumen (default constructor)
+    public User() {}
+    public User(String id, String namaLengkap, String alamatLengkap, String tanggalLahir, String usiaKehamilan, String nomorHp, String username, String password) {
         this.namaLengkap = namaLengkap;
         this.alamatLengkap = alamatLengkap;
         this.tanggalLahir = tanggalLahir;
@@ -19,13 +28,28 @@ public class User {
         this.nomorHp = nomorHp;
         this.username = username;
         this.password = password;
+        this.id = id;
     }
 
-    public int getId() {
+public String getId() {
         return id;
+}
+
+    public int castID(String id) {
+        try {
+            return Integer.parseInt(id);
+        } catch (NumberFormatException e) {
+            Log.e("User", "Invalid ID format: " + id);
+            return -1; // atau nilai default lainnya
+        }
     }
 
-    public String getNamaLengkap() {
+
+public long castID(){
+        return Integer.parseInt(this.id);
+}
+    public String
+    getNamaLengkap() {
         return namaLengkap;
     }
 
@@ -52,4 +76,6 @@ public class User {
     public String getPassword() {
         return password;
     }
+
+
 }

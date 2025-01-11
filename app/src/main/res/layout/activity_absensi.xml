@@ -34,21 +34,22 @@
                 android:textSize="16sp" />
 
             <!-- Pilih Tanggal -->
+
+            <!-- Pilih Hari -->
             <TextView
                 android:id="@+id/tvTanggal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Pilih Tanggal"
+                android:background="#FFFFFF"
+                android:backgroundTint="#E0E0E0"
                 android:clickable="true"
                 android:focusable="true"
+                android:hint="Pilih Tanggal"
                 android:padding="10dp"
-                android:background="#FFFFFF"
-                android:textColorHint="@color/ThemeText"
                 android:textColor="#333333"
-                android:textSize="16sp"
-                android:backgroundTint="#E0E0E0" />
+                android:textColorHint="@color/ThemeText"
+                android:textSize="16sp" />
 
-            <!-- Pilih Hari -->
             <TextView
                 android:id="@+id/tvHari"
                 android:layout_width="match_parent"

@@ -1,22 +1,35 @@
 package com.example.posyanduapps;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.posyanduapps.Helper.DatabaseHelper;
+import androidx.annotation.NonNull;
+
 import com.example.posyanduapps.features.MonitorUsersActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends Activity {
 
     private EditText etUsername, etPassword;
     private Button btnLogin, btnRegister;
-    private DatabaseHelper dbHelper;
+    FirebaseDatabase database;
+    DatabaseReference nodeDb;
+
+    private String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +40,12 @@ public class LoginActivity extends Activity {
         etUsername = findViewById(R.id.username);
         etPassword = findViewById(R.id.password);
         btnLogin = findViewById(R.id.loginButton);
-        dbHelper = new DatabaseHelper(this); // Database helper instance
         btnRegister = findViewById(R.id.registerButton);
+
+        // Initialize Firebase Realtime Database
+        database = FirebaseDatabase.getInstance(url);
+        nodeDb = database.getReference("users");
+
         // Set click listener for login button
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +62,7 @@ public class LoginActivity extends Activity {
         });
     }
 
-    private void registerUser(){
+    private void registerUser() {
         Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
         finish();
@@ -64,71 +81,62 @@ public class LoginActivity extends Activity {
             return;
         }
 
-        // Call the authenticateUser method from DatabaseHelper
-        if (username.equalsIgnoreCase("admin")&&password.equalsIgnoreCase("admin")) {
-            // Jika autentikasi berhasil
-            Intent intent = new Intent(LoginActivity.this, MonitorUsersActivity.class);
-            startActivity(intent);
-            finish(); // Close the LoginActivity
-        } else if (dbHelper.authenticateUser(username, password)) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            startActivity(intent);
-            finish(); // Close the LoginActivity
+        // Firebase query to authenticate user
+        nodeDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                boolean isAuthenticated = false;
 
-        } else {
-            // Jika autentikasi gagal
-            Toast.makeText(LoginActivity.this, "Username dan Password salah", Toast.LENGTH_SHORT).show();
-        }
-        {
-//                   // Log username and password input
-//            Log.d("LoginDebug", "Input Username: " + username);
-//            Log.d("LoginDebug", "Input Password: " + password);
-//
-//            // Query the database to check if the username exists
-//            Log.d("DatabaseQuery", "Querying database for user: " + username);
-//
-//            databaseReference.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(DataSnapshot dataSnapshot) {
-//                    Log.d("DatabaseQuery", "Query Success! DataSnapshot: " + dataSnapshot.getValue());
-//
-//                    // Check if username exists
-//                    if (dataSnapshot.exists()) {
-//                        Log.d("DatabaseQuery", "User exists: " + username);
-//
-//                        // Get stored password
-//                        String storedPassword = dataSnapshot.child("password").getValue(String.class);
-//                        Log.d("DatabaseQuery", "Stored Password: " + storedPassword);
-//
-//                        // Validate password
-//                        if (storedPassword != null && storedPassword.equals(password)) {
-//                            Log.d("DatabaseQuery", "Login Successful");
-//                            Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-//                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-//                            finish(); // Close LoginActivity
-//                        } else {
-//                            Log.d("DatabaseQuery", "Invalid Password");
-//                            Toast.makeText(LoginActivity.this, "Invalid Password", Toast.LENGTH_SHORT).show();
-//                        }
-//                    } else {
-//                        Log.d("DatabaseQuery", "Username not found");
-//                        Toast.makeText(LoginActivity.this, "Username not found", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//                    Log.d("DatabaseQuery", "Query Failed: " + databaseError.getMessage());
-//                }
-//            });
-//
-//
-//            Log.d("LoginDebug", "end of validateLogin");
+                // Loop through users node to find matching username and password
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    String dbUsername = userSnapshot.child("username").getValue(String.class);
+                    String dbPassword = userSnapshot.child("password").getValue(String.class);
+                    String dbNamaLengkap = userSnapshot.child("nama_lengkap").getValue(String.class);
+                    String dbid = userSnapshot.child("id").getValue(String.class);
+                    String dbalamatLengkap = userSnapshot.child("alamat_lengkap").getValue(String.class);
+                    String dbnomorhp = userSnapshot.child("nomor_hp").getValue(String.class);
+                    String dbusiakehamilan = userSnapshot.child("usia_kehamilan").getValue(String.class);
+                    String dbtangglahir = userSnapshot.child("tanggal_lahir").getValue(String.class);
+                    if (dbUsername != null && dbPassword != null &&
+                            dbUsername.equals(username) && dbPassword.equals(password)) {
+                        isAuthenticated = true;
 
-        }
+                        // Jika autentikasi berhasil
+                        if (username.equals("admin")) {
+                            Intent intent = new Intent(LoginActivity.this, MonitorUsersActivity.class);
+                            startActivity(intent);
+                        } else {
+                            // Menyimpan username saat login
+                            SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("currentUser", dbid);  // username yang didapat saat login
+                            editor.putString("currentNama", dbNamaLengkap);  // username yang didapat saat login
+                            editor.putString("currentAlamat", dbalamatLengkap);  // username yang didapat saat login
+                            editor.putString("currentNomor", dbnomorhp);  // username yang didapat saat login
+                            editor.putString("currentUsiaKehamilan", dbusiakehamilan);  // username yang didapat saat login
+                            editor.putString("currentTanggal", dbtangglahir);  // username yang didapat saat login
+                            editor.putString("currentUsername", username);  // username yang didapat saat login
+                            editor.apply();  // Menyimpan perubahan
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(intent);
+                        }
+                        finish(); // Close the LoginActivity
+                        break;
+                    }
+                }
 
+                if (!isAuthenticated) {
+                    // Jika autentikasi gagal
+                    Toast.makeText(LoginActivity.this, "Username atau Password salah", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Jika terjadi error saat mengakses database
+                Toast.makeText(LoginActivity.this, "Error: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Firebase error: " + databaseError.getMessage());
+            }
+        });
     }
-
-
-
 }

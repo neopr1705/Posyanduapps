@@ -1,7 +1,6 @@
 package com.example.posyanduapps.adapters;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,48 +8,47 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.posyanduapps.R;
-import com.example.posyanduapps.Helper.DatabaseHelper;
+import com.example.posyanduapps.models.User;
+
+import java.util.ArrayList;
 
 public class UserAdapter extends BaseAdapter {
     private Context context;
-    private Cursor cursor;
+    private ArrayList<User> userList;
 
-    public UserAdapter(Context context, Cursor cursor) {
+    public UserAdapter(Context context, ArrayList<User> userList) {
         this.context = context;
-        this.cursor = cursor;
+        this.userList = userList;
     }
 
     @Override
     public int getCount() {
-        return cursor.getCount();
+        return userList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        cursor.moveToPosition(position);
-        return cursor;
+        return userList.get(position);
     }
 
     @Override
-    public long getItemId(int position) {
-        cursor.moveToPosition(position);
-        return cursor.getLong(cursor.getColumnIndex(DatabaseHelper.COLUMN_USER_ID));
+    public long getItemId(int i) {
+        return userList.get(i).castID();
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.item_user, parent, false);
         }
 
-        cursor.moveToPosition(position);
-        TextView nameTextView = convertView.findViewById(R.id.namaLengkapTextView);
-        TextView alamatTextView = convertView.findViewById(R.id.alamatTextView);
+        User user = userList.get(position);
         TextView usernameTextView = convertView.findViewById(R.id.usernameTextView);
-        alamatTextView.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_USER_ALAMAT_LENGKAP)));
-        usernameTextView.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_USER_USERNAME)));
-        nameTextView.setText(cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_USER_NAMA_LENGKAP)));
+
+        usernameTextView.setText(user.getUsername());
 
         return convertView;
     }

@@ -1,6 +1,10 @@
 package com.example.posyanduapps;
 
+import static android.content.ContentValues.TAG;
+
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -8,19 +12,44 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+
 import com.example.posyanduapps.features.*;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
     ImageView ivHome, ivReminder, ivAddAbsensi, ivProfile, ivSettings;
-    TextView tvTitle;
+    TextView tvTitle,tvstatusKehamilan,tvTrimester;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         tvTitle = findViewById(R.id.tvTitle);
+        tvstatusKehamilan = findViewById(R.id.tvKehamilanStatus);
+        tvTrimester=findViewById(R.id.tvTrimester);
         tvTitle.setText(getText(R.string.str_Menu));
+
+        // Mengambil currentUser dari SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        String currentUser = sharedPreferences.getString("currentUser", null);  // null jika tidak ada
+        String currentNama = sharedPreferences.getString("currentNama", null);  // null jika tidak ada
+        String currentAlamat = sharedPreferences.getString("currentAlamat", null);  // null jika tidak ada
+        String currentNomor = sharedPreferences.getString("currentNomor", null);  // null jika tidak ada
+        String currentUsiaKehamilan = sharedPreferences.getString("currentUsiaKehamilan", null);  // null jika tidak ada
+        String currentTanggal = sharedPreferences.getString("currentTanggal", null);  // null jika tidak ada
+
+        tvstatusKehamilan.setText("Hallo, " + currentNama + " !");
+        tvTrimester.setText("Usia Kehamilanmu " + currentUsiaKehamilan + " Minggu !");
 
         //footer
         ivHome = findViewById(R.id.ivHome);
