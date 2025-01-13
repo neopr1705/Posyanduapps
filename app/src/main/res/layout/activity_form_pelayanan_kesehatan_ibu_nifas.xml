@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Header -->
+    <include
+        layout="@layout/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/str_Menu"/>
+
+    <TextView
+        android:id="@+id/tvIbuNifasTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ibu Nifas"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:paddingTop="16dp"
+        android:padding="16dp"
+        android:layout_below="@id/header_layout"/>
+
+    <!-- Checkboxes for various examinations -->
+    <CheckBox
+        android:id="@+id/cbPeriksaPayudara"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Periksa Payudara (ASI)"
+        android:layout_below="@id/tvIbuNifasTitle"
+        android:layout_marginTop="16dp"/>
+
+    <CheckBox
+        android:id="@+id/cbPeriksaPerdarahan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Periksa Perdarahan"
+        android:layout_below="@id/cbPeriksaPayudara"
+        android:layout_marginTop="8dp"/>
+
+    <CheckBox
+        android:id="@+id/cbPeriksaJalanLahir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Periksa Jalan Lahir"
+        android:layout_below="@id/cbPeriksaPerdarahan"
+        android:layout_marginTop="8dp"/>
+
+    <CheckBox
+        android:id="@+id/cbVitaminA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vitamin A"
+        android:layout_below="@id/cbPeriksaJalanLahir"
+        android:layout_marginTop="8dp"/>
+
+    <CheckBox
+        android:id="@+id/cbKBPascaPersalinan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="KB Pasca Persalinan"
+        android:layout_below="@id/cbVitaminA"
+        android:layout_marginTop="8dp"/>
+
+    <CheckBox
+        android:id="@+id/cbKonseling"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Konseling"
+        android:layout_below="@id/cbKBPascaPersalinan"
+        android:layout_marginTop="8dp"/>
+
+    <CheckBox
+        android:id="@+id/cbTataLaksanaKasus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tata Laksana Kasus"
+        android:layout_below="@id/cbKonseling"
+        android:layout_marginTop="8dp"/>
+
+    <!-- Save Button at the bottom -->
+    <Button
+        android:id="@+id/btnSaveIbuNifas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Simpan Data"
+        android:background="@drawable/button_base"
+        android:textColor="@android:color/white"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"/>
+</RelativeLayout>

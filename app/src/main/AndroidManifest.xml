@@ -58,6 +58,23 @@
             android:name=".features.DataIbuActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
+
+        <activity
+            android:name=".features.FormPelayananKesehatanIbuHamilActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".features.FormPelayananKesehatanBayiBaruLahirActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".features.FormPelayananKesehatanIbuBersalinActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
+        <activity
+            android:name=".features.FormPelayananKesehatanIbuNifasActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".features.MonitorUsersActivity"
             android:exported="true"

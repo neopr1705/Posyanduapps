@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_weight="1"
+    android:orientation="horizontal"
+    android:padding="18dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:gravity="center"
+    android:background="@drawable/border_top_bottom"
+    android:layout_margin="10dp"
+    >
+    <ImageView
+        android:id="@+id/ivIcon"
+        android:layout_width="124dp"
+        android:layout_height="match_parent"
+        android:contentDescription="Icon FormDataIbu"
+        android:src="@drawable/ic_launcher_foreground"
+        android:layout_margin="4dp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <!-- Name of the subcategory -->
+        <TextView
+            android:id="@+id/tvNamaFormDataIbu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Subkategori"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_margin="4dp" />
+
+        <TextView
+            android:id="@+id/tvIntroFormDataIbu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="ini adalah konten subkategori"
+            android:textSize="14sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="1.5dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

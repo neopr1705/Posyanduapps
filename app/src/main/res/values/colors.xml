@@ -24,5 +24,7 @@
         <color name="progress_color_warning">#FF9800</color> <!-- Oranye -->
         <color name="progress_color_critical">#F44336</color> <!-- Merah -->
         <color name="item_subkategori">#FFDAB9</color> <!-- Jingga pastel -->
+        <color name="selected_button_color">#87CEEB</color> <!-- Soft Blue color for selected button -->
+
 
 </resources>

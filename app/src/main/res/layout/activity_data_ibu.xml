@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <!-- Header -->
+
+    <!-- Title TextView -->
     <include
         layout="@layout/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/str_AbsensiKehadiran"/>
+        android:text="@string/str_DataIbu"/>
 
     <!-- Konten Utama -->
     <ScrollView
@@ -24,43 +24,18 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-    <EditText
-        android:id="@+id/edtNama"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nama Ibu"
-        style="@style/EditTextStyle"/>
-
-    <EditText
-        android:id="@+id/edtUmur"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Umur"
-        style="@style/EditTextStyle"
-        android:inputType="number" />
-
-    <EditText
-        android:id="@+id/edtKondisi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Kondisi Kesehatan"
-        style="@style/EditTextStyle"
-        android:inputType="textMultiLine" />
-
-    <Button
-        android:id="@+id/btnSimpan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Simpan Data"
-        style="@style/ButtonStyle"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/button_base"
-        />
-        </LinearLayout></ScrollView>
+            <!-- RecyclerView to display subcategories -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewDataIbu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingTop="8dp"
+                android:scrollbars="vertical" />
+        </LinearLayout>
+    </ScrollView>
     <include
         layout="@layout/footer_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>
-
