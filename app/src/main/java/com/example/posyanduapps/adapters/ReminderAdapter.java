@@ -1,8 +1,12 @@
 package com.example.posyanduapps.adapters;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,140 +16,166 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.posyanduapps.R;
-import com.example.posyanduapps.Helper.DatabaseHelper;  // Pastikan ada DatabaseHelper
+import com.example.posyanduapps.Helper.DatabaseHelper;
+import com.example.posyanduapps.utils.AlarmHelper;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ReminderAdapter extends ArrayAdapter<String> {
 
-    private DatabaseHelper databaseHelper;  // Instansiasi DatabaseHelper untuk akses database
-    String reminder_tanggal,reminder_jam;
-    private ExecutorService executorService; // ExecutorService untuk tugas latar belakang
-    private Handler mainHandler; // Handler untuk kembali ke thread utama
+    private DatabaseHelper databaseHelper;
+    private ExecutorService executorService;
+    private Handler mainHandler;
+
     public ReminderAdapter(Context context, List<String> reminders) {
         super(context, 0, reminders);
-        databaseHelper = new DatabaseHelper(context);  // Inisialisasi DatabaseHelper
-    }
-
-    public ReminderAdapter(Context context) {
-        super(context, 0);
-        databaseHelper = new DatabaseHelper(context);  // Inisialisasi DatabaseHelper
+        databaseHelper = new DatabaseHelper(context);
+        executorService = Executors.newSingleThreadExecutor();
+        mainHandler = new Handler(Looper.getMainLooper());
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (position < 0 || position >= getCount()) {
-            return null;  // Pastikan index valid
+            return null;  // Validate index
         }
 
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_alarm, parent, false);
         }
 
-        String reminder = getItem(position);  // Ambil data reminder
-
+        String reminder = getItem(position);
         if (reminder == null || reminder.isEmpty()) {
-            return convertView;  // Jika data kosong, kembalikan tampilan default
+            return convertView;
         }
-        // Inisialisasi ExecutorService dan Handler
-        executorService = Executors.newSingleThreadExecutor();
-        mainHandler = new Handler(Looper.getMainLooper());
-        // Set data ke tampilan item_alarm
+
+        // Extract and display data
         TextView tvReminderName = convertView.findViewById(R.id.tvNamaAlarm);
         TextView tvReminderTime = convertView.findViewById(R.id.tvJamAlarm);
         TextView tvReminderDate = convertView.findViewById(R.id.tvTanggalAlarm);
         TextView tvReminderDay = convertView.findViewById(R.id.tvHariAlarm);
         TextView tvReminderPlace = convertView.findViewById(R.id.tvTempatAlarm);
-        Switch swAktif = convertView.findViewById(R.id.swAktif);  // Switch untuk aktifkan alarm
+        Switch swAktif = convertView.findViewById(R.id.swAktif);
 
-        // Misalnya, memisahkan bagian yang relevan
         String[] parts = reminder.split(";");
         if (parts.length >= 4) {
             String name = getDataFromPart(parts[0]);
             String date = getDataFromPart(parts[1]);
             String day = getDataFromPart(parts[2]);
             String place = getDataFromPart(parts[3]);
-            String time = "";
-            if (parts.length > 4) {
-                time = getDataFromPart(parts[4]);
-                time = time.replace(".", ":");
-            }
+            String time = parts.length > 4 ? getDataFromPart(parts[4]).replace(".", ":") : "";
 
-            // Set data ke tampilan
-            tvReminderName.setText("Nama: " + name);
-            tvReminderDate.setText("Tanggal: " + date);
-            tvReminderDay.setText("Hari: " + day);
-            tvReminderTime.setText("Jam: " + time);
-            tvReminderPlace.setText("Tempat: " + place);
-            reminder_tanggal = date;
-            reminder_jam = time;
-
+            tvReminderName.setText(name);
+            tvReminderDate.setText(date);
+            tvReminderDay.setText(day);
+            tvReminderTime.setText(time);
+            tvReminderPlace.setText(place);
         }
 
-        // Logika saat Switch diubah
+        // Switch listener to activate/deactivate alarm
         swAktif.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Store the initial state of the switch
+            final boolean initialSwitchState = swAktif.isChecked();
+
             if (isChecked) {
-                // Alarm aktif, simpan ke database
                 new android.app.AlertDialog.Builder(getContext())
-                        .setMessage("Alarm untuk " + reminder_tanggal + "; " + reminder_jam + " ini akan ditambahkan?")
+                        .setMessage("Alarm untuk " + reminder + " akan ditambahkan?")
                         .setPositiveButton("Ya", (dialog, which) -> {
-                            // Menjalankan proses penambahan alarm di background thread
+                            // Assuming reminder contains both date and time in "tanggal;jam" format
+                            String[] reminderParts = reminder.split(";");
+                            String tanggal = reminderParts[0]; // First part is the date
+                            String jam = reminderParts[1];     // Second part is the time
+                            String id= tvReminderName.getText().toString()+tvReminderDate.getText().toString()+tvReminderDay.getText().toString()+tvReminderPlace.getText().toString();
+                            int newid = id.hashCode();
                             executorService.submit(() -> {
-                                // Menyisipkan alarm ke database dan mendapatkan ID alarm
-                                boolean alarmId = databaseHelper.insertAlarm(reminder_tanggal, reminder_jam, 1); // 1 berarti aktif
+                                Log.d("ReminderAdapter", "Setting alarm for: "+newid+" " + tanggal + " " + jam);
+                                boolean alarmSet = databaseHelper.insertAlarm(newid,tanggal, jam, 1); // 1 means active
                                 mainHandler.post(() -> {
-                                    if (alarmId != false) {
-                                        // Alarm berhasil diset
-                                        databaseHelper.insertAlarm(reminder_tanggal, reminder_jam,1); // Set Alarm menggunakan tanggal dan jam
+                                    if (alarmSet) {
+                                        setAlarm(reminder);
                                         Toast.makeText(getContext(), "Alarm berhasil diset!", Toast.LENGTH_SHORT).show();
+                                        addNewReminder(reminder);
                                     } else {
-                                        // Jika insert gagal, tampilkan pesan kesalahan
-                                        Toast.makeText(getContext(), "Gagal set alarm! Periksa format tanggal/jam atau koneksi database.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getContext(), "Gagal set alarm!", Toast.LENGTH_LONG).show();
                                     }
                                 });
                             });
                         })
-                        .setNegativeButton("Tidak", null)
+                        .setNegativeButton("Tidak", (dialog, which) -> {
+                            swAktif.setChecked(false);
+                        })
                         .show();
             } else {
-                // Alarm dimatikan, konfirmasi hapus dari database
+
                 new android.app.AlertDialog.Builder(getContext())
-                        .setMessage("Apakah Anda yakin ingin mematikan alarm ini?")
+                        .setMessage("Apakah Anda yakin ingin mematikan alarm ini?" + (tvReminderName.getText().toString() + tvReminderDate.getText().toString() + tvReminderDay.getText().toString() + tvReminderPlace.getText().toString()).hashCode())
                         .setPositiveButton("Ya", (dialog, which) -> {
-                            // Pastikan reminder berisi ID alarm yang valid
-                            int alarmId = Integer.parseInt(reminder); // ID alarm untuk dihapus
                             executorService.submit(() -> {
-                                boolean isDeleted = databaseHelper.deleteAlarm(alarmId); // Hapus alarm berdasarkan ID
                                 mainHandler.post(() -> {
+                                    boolean isDeleted = databaseHelper.deleteAlarm((tvReminderName.getText().toString() + tvReminderDate.getText().toString() + tvReminderDay.getText().toString() + tvReminderPlace.getText().toString()).hashCode());
                                     if (isDeleted) {
                                         Toast.makeText(getContext(), "Alarm berhasil dihapus!", Toast.LENGTH_SHORT).show();
+                                        // Update the data and notify the adapter to refresh the list
+                                        deleteAlarm(reminder);
+
+                                        removeReminder(reminder);
                                     } else {
                                         Toast.makeText(getContext(), "Gagal hapus alarm!", Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             });
                         })
-                        .setNegativeButton("Tidak", null)
+                        .setNegativeButton("Tidak", (dialog, which) -> {
+                            // Reset the switch to its initial state if "Tidak" is clicked
+                            swAktif.setChecked(false);
+                        })
                         .show();
+
             }
         });
 
 
         return convertView;
     }
+    private void addNewReminder(String reminder) {
+        // Add new reminder to the list
+        add(reminder);  // 'add' is a method from ArrayAdapter to add items to the list
+        notifyDataSetChanged(); // Notify the adapter to update the UI
+    }
+
+    private void removeReminder(String reminder) {
+        remove(reminder);  // 'remove' is a method from ArrayAdapter to remove items from the list
+        notifyDataSetChanged(); // Notify the adapter to update the UI
+    }
+
+    private void deleteAlarm(String reminder){
+        String[] parts = reminder.split(";");
+        if (parts.length < 5) return;
+        AlarmHelper alarmHelper = new AlarmHelper(getContext());
+        alarmHelper.cancelAlarm(parts[0]+"\n"+parts[1]+"\n"+parts[2]+"\n"+parts[3]);
+        Log.d("ReminderAdapter", "Canceled alarm with id: "+(parts[0]+"\n"+parts[1]+"\n"+parts[2]+"\n"+parts[3]).hashCode());
+
+
+    }
+    private void setAlarm(String reminder) {
+        // Parse reminder details
+        String[] parts = reminder.split(";");
+        if (parts.length < 5) return;
+
+        String time = parts[4].replace(".", ":");
+        time = time.replace(" Jam: ","");
+        String[] timeParts = time.split(":");
+        int hour = Integer.parseInt(timeParts[0]);
+        int minute = Integer.parseInt(timeParts[1]);
+        AlarmHelper alarmHelper = new AlarmHelper(getContext());
+        alarmHelper.setAlarm(hour,minute,(parts[0]+"\n"+parts[1]+"\n"+parts[2]+"\n"+parts[3]));
+
+    }
 
     private String getDataFromPart(String part) {
-        if (part != null && part.matches("\\d{2}.\\d{2}")) {
-            return part.trim();
-        }
-
-        String[] splitData = part.split(":");
-        if (splitData.length > 1) {
-            return splitData[1].trim();
-        }
-
-        return part.trim();
+        return part != null ? part.trim() : "";
     }
 }

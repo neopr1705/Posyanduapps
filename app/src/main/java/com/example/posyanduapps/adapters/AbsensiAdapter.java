@@ -70,7 +70,7 @@ public class AbsensiAdapter extends android.widget.BaseAdapter {
         // Fungsi Hapus
         btnDelete.setOnClickListener(v -> {
             // Membuat dialog konfirmasi
-            new AlertDialog.Builder(context)
+            new AlertDialog.Builder(context,R.style.AppTemaDialog)
                     .setTitle("Konfirmasi Hapus")
                     .setMessage("Apakah Anda yakin ingin menghapus jadwal ini?")
                     .setPositiveButton("Ya", (dialog, which) -> {

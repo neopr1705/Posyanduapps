@@ -14,6 +14,7 @@ import com.example.posyanduapps.LoginActivity;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.adapters.UserAdapter;
 import com.example.posyanduapps.models.User;
+import com.example.posyanduapps.utils.FirebaseManager;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,36 +52,29 @@ public class MonitorUsersActivity extends Activity {
             finish();
         });
 
-        // Inisialisasi Firebase Database
-        databaseReference = FirebaseDatabase.getInstance(url).getReference("users");
-
         loadUsers();
     }
 
     private void loadUsers() {
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        FirebaseManager.readData("users", new FirebaseManager.FirebaseCallback<DataSnapshot>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void onSuccess(DataSnapshot dataSnapshot) {
                 userList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    try {
-                        User user = snapshot.getValue(User.class);
-                        if (user != null) {
-                            userList.add(user);
-                        } else {
-                            Log.e("MonitorUsersActivity", "Invalid user data: " + snapshot.toString());
-                        }
-                    } catch (Exception e) {
-                        Log.e("MonitorUsersActivity", "Error parsing user: " + e.getMessage());
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        userList.add(user);
                     }
                 }
                 userAdapter = new UserAdapter(MonitorUsersActivity.this, userList);
-                userListView.setAdapter(userAdapter);            }
+                userListView.setAdapter(userAdapter);
+            }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Handle possible errors
+            public void onError(String error) {
+                Log.e("MonitorUsersActivity", "Error loading users: " + error);
             }
         });
     }
+
 }

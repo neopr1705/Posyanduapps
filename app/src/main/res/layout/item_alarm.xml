@@ -12,6 +12,13 @@
         android:layout_marginRight="10dp"
         android:orientation="vertical"
         android:padding="8dp">
+        <TextView
+            android:id="@+id/tvTitleNamaAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nama:"
+            android:textSize="18sp"
+            android:textStyle="bold" />
         <!-- Nama Alarm -->
         <TextView
             android:id="@+id/tvNamaAlarm"
@@ -22,6 +29,12 @@
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/tvTitleTanggalAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tanggal :"
+            android:textSize="16sp"/>
         <!-- Tanggal Alarm -->
         <TextView
             android:id="@+id/tvTanggalAlarm"
@@ -30,7 +43,12 @@
             android:layout_marginBottom="4dp"
             android:text=""
             android:textSize="16sp" />
-
+        <TextView
+            android:id="@+id/tvTitleHariAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hari :"
+            android:textSize="16sp"/>
         <!-- Hari Alarm -->
         <TextView
             android:id="@+id/tvHariAlarm"
@@ -39,7 +57,12 @@
             android:layout_marginBottom="4dp"
             android:text=""
             android:textSize="16sp" />
-
+        <TextView
+            android:id="@+id/tvTitleJamAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Jam :"
+            android:textSize="16sp"/>
         <!-- Jam Alarm -->
         <TextView
             android:id="@+id/tvJamAlarm"
@@ -48,7 +71,12 @@
             android:layout_marginBottom="4dp"
             android:text=""
             android:textSize="16sp" />
-
+        <TextView
+            android:id="@+id/tvTitleTempatAlarm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tempat :"
+            android:textSize="16sp"/>
         <!-- Tempat Alarm -->
         <TextView
             android:id="@+id/tvTempatAlarm"

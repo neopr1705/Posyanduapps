@@ -26,26 +26,35 @@ import java.util.Calendar;
 public class PengingatActivity extends Activity implements View.OnClickListener {
 
     private Button btnSetReminder;
-    private TextView tvSelectedDate;
     private ListView lvReminders;
+    private TextView tvTitle;
+
     private DatabaseHelper dbHelper;
     private ArrayList<String> reminderList;
-    private ReminderAdapter reminderAdapter;  // Ganti dengan custom adapter
+    private ReminderAdapter reminderAdapter;
 
     private ImageView ivHome, ivReminder, ivAddAbsensi, ivProfile, ivSettings;
-    private Intent intent;
-    private TextView tvTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pengingat);
+
+        initializeUI();
+        initializeDatabase();
+        loadRemindersFromDatabase();
+    }
+
+    private void initializeUI() {
+        // Initialize header
         View headerLayout = findViewById(R.id.header_layout);
-        // Inisialisasi HeaderIconHelper
         new HeaderIconHelper(this, headerLayout);
+
+        // Set title
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText(getText(R.string.str_Pengingat));
-        //footer
+
+        // Initialize footer buttons
         ivHome = findViewById(R.id.ivHome);
         ivReminder = findViewById(R.id.ivReminder);
         ivAddAbsensi = findViewById(R.id.ivAddAbsensi);
@@ -58,31 +67,50 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
 
+        // Set the color for the reminder icon
+        ivReminder.setColorFilter(getResources().getColor(R.color.softBlue));
+
+        // Initialize ListView
         lvReminders = findViewById(R.id.lvReminders);
+    }
 
-        ivReminder.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
-
-
-        // Inisialisasi DatabaseHelper dan ListView
+    private void initializeDatabase() {
         dbHelper = new DatabaseHelper(this);
         reminderList = new ArrayList<>();
-        reminderAdapter = new ReminderAdapter(this, reminderList);  // Gunakan ReminderAdapter
+        reminderAdapter = new ReminderAdapter(this, reminderList);
         lvReminders.setAdapter(reminderAdapter);
-
-        // Ambil pengingat dari database
-        loadRemindersFromDatabase();
-
-        // Set listener untuk ListView item
-        lvReminders.setOnItemClickListener((parent, view, position, id) -> {
-            String reminder = reminderList.get(position);
-            Toast.makeText(this, "Pengingat dipilih: " + reminder, Toast.LENGTH_SHORT).show();
-        });
-
     }
+
+    private void loadRemindersFromDatabase() {
+        reminderList.clear();
+        Cursor cursor = dbHelper.getAllAbsensi();
+
+        if (cursor.moveToFirst()) {
+            do {
+                String name = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_NAME));
+                String tanggal = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_TANGGAL));
+                String hari = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_HARI));
+                String jam = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_JAM));
+                String tempat = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_TEMPAT));
+
+                jam = jam.replace(":", ".");
+                String reminderData = String.format("%s;%s;%s;%s;%s", name, tanggal, hari, tempat, jam);
+                reminderList.add(reminderData);
+
+
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        reminderAdapter.notifyDataSetChanged();
+    }
+
 
     @Override
     public void onClick(View v) {
-                // Dapatkan aksi klik jika diperlukan
+        // Menggunakan Intent untuk membuka aktivitas yang sesuai dengan tombol yang diklik
+        Intent intent;
+
         if(v.getId() == ivHome.getId()){
             intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -109,119 +137,4 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
     }
-
-    private void loadRemindersFromDatabase() {
-        reminderList.clear();
-        Cursor cursor = dbHelper.getAllAbsensi();
-
-        if (cursor.moveToFirst()) {
-            do {
-                // Ambil data dari kolom database
-                String name = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_NAME));
-                String tanggal = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_TANGGAL));
-                String hari = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_HARI));
-                String jam = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_JAM));
-                String tempat = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_TEMPAT));
-
-
-                // Pastikan Hari dan Tempat hanya ditambahkan sekali
-                jam = jam.replace(":", ".");
-                String reminderData = "Nama: " + name + "; Tanggal: " + tanggal + "; Hari: " + hari + "; Tempat: " + tempat + "; Jam: " + jam;
-                Log.d("DatabaseData", "Nama: " + name + ", Tanggal: " + tanggal + ", Hari: " + hari + ", Jam: " + jam + ", Tempat: " + tempat);
-
-                // Tambahkan ke dalam ListView
-                reminderList.add(reminderData);
-
-                // Jadwalkan alarm jika tanggal dan jam valid
-                try {
-                    if (tanggal.contains("/") && jam.contains(":")) {
-                        String[] dateParts = tanggal.split("/");
-                        String[] timeParts = jam.split(":");
-
-                        if (dateParts.length == 3 && timeParts.length == 2) {
-                            int day = Integer.parseInt(dateParts[0]);
-                            int month = Integer.parseInt(dateParts[1]) - 1; // Bulan dimulai dari 0
-                            int year = Integer.parseInt(dateParts[2]);
-
-                            int hour = Integer.parseInt(timeParts[0]);
-                            int minute = Integer.parseInt(timeParts[1]);
-
-                            // Jadwalkan alarm
-                            scheduleAlarm(year, month, day, hour, minute);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e("AlarmError", "Gagal menjadwalkan alarm: " + e.getMessage());
-                    Toast.makeText(this, "Gagal menjadwalkan alarm: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
-            } while (cursor.moveToNext());
-        } else {
-            Log.w("DatabaseData", "Database kosong atau tidak ada data absensi.");
-        }
-        cursor.close();
-        reminderAdapter.notifyDataSetChanged();
-    }
-
-
-
-    // Fungsi untuk mendapatkan nama hari berdasarkan tanggal
-    private String getDayOfWeek(String tanggal) {
-        try {
-            String[] dateParts = tanggal.split("/");
-            int day = Integer.parseInt(dateParts[0]);
-            int month = Integer.parseInt(dateParts[1]) - 1; // Bulan dimulai dari 0
-            int year = Integer.parseInt(dateParts[2]);
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(year, month, day);
-
-            int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK); // Mendapatkan hari dari Calendar
-            switch (dayOfWeek) {
-                case Calendar.SUNDAY: return "Minggu";
-                case Calendar.MONDAY: return "Senin";
-                case Calendar.TUESDAY: return "Selasa";
-                case Calendar.WEDNESDAY: return "Rabu";
-                case Calendar.THURSDAY: return "Kamis";
-                case Calendar.FRIDAY: return "Jumat";
-                case Calendar.SATURDAY: return "Sabtu";
-                default: return "Hari tidak valid";
-            }
-        } catch (Exception e) {
-            Log.e("DateParsing", "Error parsing date: " + e.getMessage());
-            return "Hari tidak ditemukan";
-        }
-    }
-
-    private void scheduleAlarm(int year, int month, int day, int hour, int minute) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, minute);
-        calendar.set(Calendar.SECOND, 0);
-
-        Log.d("AlarmScheduling", "Calendar time (millis): " + calendar.getTimeInMillis() +
-                ", Current time (millis): " + System.currentTimeMillis());
-
-        if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
-            Log.w("AlarmScheduling", "Waktu alarm sudah lewat, tidak dapat dijadwalkan.");
-            return;
-        }
-
-        Intent intent = new Intent(this, ReminderAdapter.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        if (alarmManager != null) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            Log.d("AlarmScheduling", "Alarm berhasil dijadwalkan untuk waktu: " + calendar.getTime());
-        } else {
-            Log.e("AlarmScheduling", "Gagal mendapatkan AlarmManager.");
-        }
-    }
-
-
 }
