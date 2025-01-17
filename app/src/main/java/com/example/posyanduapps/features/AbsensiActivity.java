@@ -66,6 +66,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         initHelpers();
         initUI();
         initListeners();
+        fetchNamaPasienFromFirebase();
         loadAbsensiData();
     }
 
@@ -83,7 +84,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         namaPasienList = new ArrayList<>();
 
         // Ambil nama pasien dari Firebase dan set ke Spinner
-        fetchNamaPasienFromFirebase();
+
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText( R.string.str_AbsensiKehadiran);
         SharedPreferences sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
@@ -132,9 +133,13 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
                     String namaLengkap = snapshot.child("nama_lengkap").getValue(String.class);  // Mendapatkan nama lengkap pasien
 
                     if (id != null && namaLengkap != null) {
-                        // Menggabungkan id dan nama lengkap untuk format yang diinginkan
-                        String itemSpinner = id + " - " + namaLengkap;
-                        namaPasienList.add(itemSpinner);  // Menambah ke list
+
+
+                            // Menggabungkan id dan nama lengkap untuk format yang diinginkan
+                            String itemSpinner = id + " - " + namaLengkap;
+                            namaPasienList.add(itemSpinner);  // Menambah ke list
+
+
                     }
                 }
 
@@ -174,17 +179,18 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     }
 
     private void tambahHadir() {
-        String nama = edtNama.getText().toString();
+        String nama = spinnerNamaPasien.getSelectedItem().toString();
+        String strNama = nama.split(" - ")[1];
         String tempat = edtTempat.getText().toString();
 
-        if (isInputValid(nama, tempat)) {
+        if (isInputValid(strNama, tempat)) {
             executorService.submit(() -> {
                 boolean isDuplicate = databaseHelper.checkDuplicateAbsensi(selectedTanggal, selectedJam, tempat);
 
                 mainHandler.post(() -> {
                     if (isDuplicate) {
                         showToast("Jadwal tidak tersedia");
-                    } else if (addAbsensiToDatabase(nama, tempat)) {
+                    } else if (addAbsensiToDatabase(strNama, tempat)) {
                         showToast("Absensi berhasil ditambahkan");
                         clearInputFields();
                     } else {
@@ -219,7 +225,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     }
 
     private void clearInputFields() {
-        edtNama.setText("");
+
         edtTempat.setText("");
         tvTanggal.setText("");
         tvHari.setText("");
