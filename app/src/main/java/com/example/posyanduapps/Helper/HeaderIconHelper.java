@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.posyanduapps.LoginActivity;
@@ -14,7 +15,9 @@ import com.example.posyanduapps.R;
 public class HeaderIconHelper implements View.OnClickListener {
 
     private Context context;
-    private ImageView ivLogout;
+    private ImageView ivLogout,ivChoice;
+
+    private TextView tvChoice;
 
     // Constructor menerima konteks dan instance layout
     public HeaderIconHelper(Context context, View headerLayout) {
@@ -22,9 +25,11 @@ public class HeaderIconHelper implements View.OnClickListener {
 
         // Inisialisasi ImageView dari layout
         ivLogout = headerLayout.findViewById(R.id.ivLogout);
-
+        tvChoice = headerLayout.findViewById(R.id.tvchoice);
+        ivChoice = headerLayout.findViewById(R.id.ivChoice);
         // Atur listener klik
         ivLogout.setOnClickListener(this);
+
     }
 
     @Override
@@ -57,5 +62,11 @@ public class HeaderIconHelper implements View.OnClickListener {
                 .create()
                 .show();
     }
+
+    public void setChoiceGONE(){
+        tvChoice.setVisibility(View.GONE);
+        ivChoice.setVisibility(View.GONE);
+    }
+
 
 }

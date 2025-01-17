@@ -9,63 +9,12 @@
         layout="@layout/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/str_Menu"/>
+        android:text="@string/str_Menu"
+       android:layout_marginBottom="15dp"/>
 
-    <TextView
-        android:id="@+id/tvIbuHamilTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ibu Hamil"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:paddingTop="16dp"
-        android:padding="16dp"/>
 
-    <!-- Trimester Selection -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="8dp"
-        android:padding="16dp">
-        <Button
-            android:id="@+id/btn_trimester1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Trimester 1"
-            android:background="@drawable/button_base"
-            android:textColor="@android:color/white"
-            android:layout_marginEnd="5dp"/>
-        <Button
-            android:id="@+id/btn_trimester2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Trimester 2"
-            android:background="@drawable/button_base"
-            android:textColor="@android:color/white"
-            android:layout_marginEnd="5dp"/>
-        <Button
-            android:id="@+id/btn_trimester3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Trimester 3"
-            android:background="@drawable/button_base"
-            android:textColor="@android:color/white"
-            android:layout_marginEnd="5dp"/>
-    </LinearLayout>
 
-    <!-- HPHT input field -->
-    <EditText
-        android:id="@+id/et_hpht"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="HPHT (Hari Pertama Haid Terakhir)"
-        android:inputType="date"
-        android:padding="16dp"/>
+
     <TextView
         android:id="@+id/tvPemeriksaanTitle"
         android:layout_width="match_parent"
@@ -74,7 +23,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@android:color/black"
-        android:paddingTop="16dp"/>
+        android:paddingTop="16dp"
+        android:paddingStart="16dp"/>
     <!-- ScrollView for pemeriksaan section -->
     <ScrollView
         android:layout_width="match_parent"
@@ -88,157 +38,162 @@
             android:orientation="vertical">
             <!-- Pemeriksaan Section -->
 
-
+            <!--Balita -->
             <EditText
-                android:id="@+id/et_timbang"
+                android:id="@+id/et_berat_badan_bayi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Berat Badan (kg)"
+                android:hint="Berat Badan Bayi (kg)"
                 android:inputType="numberDecimal"
-                android:padding="8dp"/>
+                android:padding="8dp" />
 
             <EditText
-                android:id="@+id/et_ukur_lengan"
+                android:id="@+id/et_tinggi_badan_bayi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ukuran Lengan Atas (cm)"
-                android:inputType="number"
-                android:padding="8dp"/>
+                android:hint="Tinggi Badan Bayi (cm)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
 
-            <!-- Tekanan Darah (input angka) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingTop="8dp">
-                <EditText
-                    android:id="@+id/et_sistolik"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Sistolik"
-                    android:inputType="number"
-                    android:padding="8dp"/>
-                <EditText
-                    android:id="@+id/et_diastolik"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:hint="Diastolik"
-                    android:inputType="number"
-                    android:padding="8dp"/>
-            </LinearLayout>
-
-            <!-- Periksa Tinggi Rahim (input angka) -->
             <EditText
-                android:id="@+id/et_tinggi_rahim"
+                android:id="@+id/et_lingkar_kepala_bayi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tinggi Rahim (cm)"
-                android:inputType="number"
-                android:padding="8dp"/>
+                android:hint="Lingkar Kepala Bayi (cm)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
 
-            <!-- Periksa Letak dan Denyut Jantung Janin (input teks) -->
             <EditText
-                android:id="@+id/et_letak_denyut"
+                android:id="@+id/et_status_obat_vaksin_bayi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Letak dan Denyut Jantung Janin"
+                android:hint="Status Pemberian Obat, Vaksin, dan Vitamin Bayi"
                 android:inputType="text"
-                android:padding="8dp"/>
+                android:padding="8dp" />
 
-            <!-- Status dan Imunisasi Tetanus (input teks) -->
             <EditText
-                android:id="@+id/et_status_imunisasi"
+                android:id="@+id/et_riwayat_penyakit_bayi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Catatan Imunisasi Tetanus"
+                android:hint="Riwayat Penyakit Bayi"
                 android:inputType="text"
-                android:padding="8dp"/>
+                android:padding="8dp" />
 
-            <!-- Konseling (input teks) -->
+            <!-- Lansia -->
             <EditText
-                android:id="@+id/et_konseling"
+                android:id="@+id/et_berat_badan_lansia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Catatan Konseling"
+                android:hint="Berat Badan Lansia (kg)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/et_tinggi_badan_lansia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Tinggi Badan Lansia (cm)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/et_lingkar_kepala_lansia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Lingkar Kepala Lansia (cm)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/et_lingkar_perut_lansia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Lingkar Perut Lansia (cm)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/et_status_obat_lansia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Status Pemberian Obat Lansia"
                 android:inputType="text"
-                android:padding="8dp"/>
+                android:padding="8dp" />
 
-            <!-- Skrining Dokter (input teks) -->
             <EditText
-                android:id="@+id/et_skrining_dokter"
+                android:id="@+id/et_riwayat_penyakit_lansia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Catatan Skrining Dokter"
+                android:hint="Riwayat Penyakit Lansia"
                 android:inputType="text"
-                android:padding="8dp"/>
+                android:padding="8dp" />
 
-            <!-- Tablet Tambah Darah (input angka) -->
+            <!-- Bumil (Ibu Hamil) -->
             <EditText
-                android:id="@+id/et_tablet_tambah_darah"
+                android:id="@+id/et_berat_badan_bumil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Jumlah Tablet Tambah Darah"
-                android:inputType="number"
-                android:padding="8dp"/>
+                android:hint="Berat Badan Bumil (kg)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
 
-            <!-- Test Lab Hemoglobin (Hb) (input angka) -->
             <EditText
-                android:id="@+id/et_hb"
+                android:id="@+id/et_tinggi_badan_bumil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tes Hemoglobin (Hb)"
-                android:inputType="number"
-                android:padding="8dp"/>
+                android:hint="Tinggi Badan Bumil (cm)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
 
-            <!-- Test Golongan Darah (input teks) -->
             <EditText
-                android:id="@+id/et_golongan_darah"
+                android:id="@+id/et_lingkar_kepala_bumil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Golongan Darah"
+                android:hint="Lingkar Kepala Bumil (cm)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/et_lingkar_lengan_bumil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Lingkar Lengan Atas Bumil (cm)"
+                android:inputType="numberDecimal"
+                android:padding="8dp" />
+
+            <EditText
+                android:id="@+id/et_status_obat_vaksin_bumil"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Status Obat, Vaksin, dan Vitamin Bumil"
                 android:inputType="text"
-                android:padding="8dp"/>
+                android:padding="8dp" />
 
-            <!-- Test Lab Protein Urine (input angka) -->
             <EditText
-                android:id="@+id/et_protein_urine"
+                android:id="@+id/et_riwayat_penyakit_bumil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tes Protein Urine (mg/dL)"
-                android:inputType="number"
-                android:padding="8dp"/>
-
-            <!-- Test Lab Gula Darah (input angka) -->
-            <EditText
-                android:id="@+id/et_gula_darah"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Tes Gula Darah (mg/dL)"
-                android:inputType="number"
-                android:padding="8dp"/>
-
-            <!-- PPIA (input teks) -->
-            <EditText
-                android:id="@+id/et_ppia"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Catatan PPIA"
+                android:hint="Riwayat Penyakit Bumil"
                 android:inputType="text"
-                android:padding="8dp"/>
+                android:padding="8dp" />
 
-            <!-- Tata Laksana Kasus (input teks) -->
-            <EditText
-                android:id="@+id/et_tata_laksana_kasus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Tata Laksana Kasus"
-                android:inputType="text"
-                android:padding="8dp"/>
+
         </LinearLayout>
     </ScrollView>
 
+    <Button
+        android:id="@+id/btn_clearfields"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hapus Semua Data"
+        android:background="@drawable/button_selected"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:padding="10dp"
+        android:layout_alignParentBottom="true"/>
     <!-- Save Button -->
     <Button
         android:id="@+id/btn_simpan"
@@ -248,9 +203,14 @@
         android:background="@drawable/button_base"
         android:textColor="@android:color/white"
         android:layout_marginTop="15dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:padding="10dp"
         android:layout_alignParentBottom="true"/>
+
+    <include
+        layout="@layout/footer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </LinearLayout>

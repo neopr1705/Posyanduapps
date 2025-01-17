@@ -27,11 +27,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Daftar Pengingat:"
+        android:text="Daftar Pengingat :"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
 
-    <!-- ListView untuk menampilkan pengingat dari database -->
+            <TextView
+                android:id="@+id/tvidentifierDb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Tidak ada pengingat ditemukan!"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
+
+
+            <!-- ListView untuk menampilkan pengingat dari database -->
             <ListView
                 android:id="@+id/lvReminders"
                 android:layout_width="match_parent"

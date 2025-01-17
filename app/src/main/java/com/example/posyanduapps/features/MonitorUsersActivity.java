@@ -2,6 +2,7 @@ package com.example.posyanduapps.features;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.posyanduapps.LoginActivity;
 import com.example.posyanduapps.R;
@@ -22,37 +24,63 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-public class MonitorUsersActivity extends Activity {
+public class MonitorUsersActivity extends Activity  implements View.OnClickListener{
     private DatabaseReference databaseReference;
     private ListView userListView;
     private UserAdapter userAdapter;
     private TextView tvTitle;
-    private ImageView ivLogout;
-    private Button btnKembali;
+    private ImageView ivLogout, ivHome, ivReminder, ivProfile, ivSettings;
     private ArrayList<User> userList = new ArrayList<>();
     private String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
+    private Intent intent;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monitor_user);
+        SharedPreferences sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("currentOption", 4);  // username yang didapat saat login
+        editor.apply();  // Menyimpan perubahan
         tvTitle = findViewById(R.id.tvTitle);
-        tvTitle.setText("MONITOR USER");
+        tvTitle.setText("MONITOR USER (Admin)");
         ivLogout = findViewById(R.id.ivLogout);
-        ivLogout.setVisibility(View.GONE);
+
+        initializeview();
+
 
 
         userListView = findViewById(R.id.userListView);
-        btnKembali = findViewById(R.id.btnKembali);
 
-        btnKembali.setOnClickListener(v -> {
+        ivLogout.setOnClickListener(v -> {
             Intent intent = new Intent(MonitorUsersActivity.this, LoginActivity.class);
+            Toast.makeText(this, "Logout Berhasil!", Toast.LENGTH_LONG).show();
             startActivity(intent);
             finish();
         });
 
+
         loadUsers();
+    }
+
+    public void initializeview(){
+        ImageView choice = findViewById(R.id.ivChoice);
+        choice.setVisibility(View.GONE);
+        TextView tvChoice = findViewById(R.id.tvchoice);
+        tvChoice.setVisibility(View.GONE);
+        ivHome = findViewById(R.id.ivHome);
+        ivHome.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
+        ivReminder = findViewById(R.id.ivReminder);
+        ivProfile = findViewById(R.id.ivProfile);
+        ivProfile.setImageResource(R.drawable.baseline_assignment_add_24);
+        ivSettings = findViewById(R.id.ivSettings);
+        ivSettings.setVisibility(View.GONE);
+        ivHome.setOnClickListener(this);
+        ivReminder.setOnClickListener(this);
+        ivProfile.setOnClickListener(this);
+        ivSettings.setOnClickListener(this);
+
     }
 
     private void loadUsers() {
@@ -77,4 +105,31 @@ public class MonitorUsersActivity extends Activity {
         });
     }
 
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == ivHome.getId()){
+            intent = new Intent(this, DashboardActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
+        }
+        else if (v.getId() == ivReminder.getId()) {
+            intent = new Intent(this, PengingatActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
+        }
+        else if (v.getId() == ivSettings.getId()) {
+            intent = new Intent(this, DataIbuActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
+        }
+        else if (v.getId() == ivProfile.getId()) {
+            intent = new Intent(this, AbsensiActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
+        }
+    }
 }

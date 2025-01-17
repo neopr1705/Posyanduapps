@@ -1,9 +1,7 @@
 package com.example.posyanduapps.features;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +24,11 @@ import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.MainActivity;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.adapters.AbsensiAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,11 +49,14 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     private String currentUser;
     private ArrayList<String> absensiList;
     private AbsensiAdapter customAdapter;
-
+    private Spinner spinnerNamaPasien;
+    private ArrayList<String> namaPasienList;
+    private ArrayAdapter<String> adapter;
     // Helpers
     private DatabaseHelper databaseHelper;
     private ExecutorService executorService;
     private Handler mainHandler;
+    String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,22 +74,31 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         executorService = Executors.newSingleThreadExecutor();
         mainHandler = new Handler(Looper.getMainLooper());
         absensiList = new ArrayList<>();
-        SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
-        currentUser = sharedPreferences.getString("currentNama", null);
+
     }
 
     private void initUI() {
-        tvTitle = findViewById(R.id.tvTitle);
-        tvTitle.setText(R.string.str_AbsensiKehadiran);
+        // Inisialisasi Spinner dan List pasien
+        spinnerNamaPasien = findViewById(R.id.spinnerNamaPasien);
+        namaPasienList = new ArrayList<>();
 
-        edtNama = findViewById(R.id.edtNama);
-        edtNama.setHint(currentUser);
+        // Ambil nama pasien dari Firebase dan set ke Spinner
+        fetchNamaPasienFromFirebase();
+        tvTitle = findViewById(R.id.tvTitle);
+        tvTitle.setText( R.string.str_AbsensiKehadiran);
+        SharedPreferences sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("currentOption", 4);  // username yang didapat saat login
+        editor.apply();  // Menyimpan perubahan
         edtTempat = findViewById(R.id.edtTempat);
 
         tvTanggal = findViewById(R.id.tvTanggal);
         tvHari = findViewById(R.id.tvHari);
         tvJam = findViewById(R.id.tvJam);
-
+        TextView tvchoice = findViewById(R.id.tvchoice);
+        ImageView ivChoice = findViewById(R.id.ivChoice);
+        tvchoice.setVisibility(View.GONE);
+        ivChoice.setVisibility(View.GONE);
         btnHadir = findViewById(R.id.btnHadir);
         lvAbsensi = findViewById(R.id.lvAbsensi);
 
@@ -91,12 +107,58 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
 
         ivHome = findViewById(R.id.ivHome);
         ivReminder = findViewById(R.id.ivReminder);
-        ivAddAbsensi = findViewById(R.id.ivAddAbsensi);
-        ivAddAbsensi.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
         ivProfile = findViewById(R.id.ivProfile);
+        ivProfile.setImageResource(R.drawable.baseline_assignment_add_24);
+        ivProfile.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
         ivSettings = findViewById(R.id.ivSettings);
-
+        ivSettings.setVisibility(View.GONE);
         new HeaderIconHelper(this, findViewById(R.id.header_layout));
+
+    }
+    private void fetchNamaPasienFromFirebase() {
+        // Firebase reference untuk mengambil data pasien dari URL Firebase yang sudah diberikan
+        DatabaseReference database = FirebaseDatabase.getInstance(url).getReference("users");
+
+        // Menambahkan listener untuk mengambil data pasien
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Clear daftar nama pasien sebelum menambahkan yang baru
+                namaPasienList.clear();
+
+                // Looping untuk mengambil data pasien (id dan nama_lengkap) dari Firebase
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String id = snapshot.child("id").getValue(String.class);  // Mendapatkan id pasien
+                    String namaLengkap = snapshot.child("nama_lengkap").getValue(String.class);  // Mendapatkan nama lengkap pasien
+
+                    if (id != null && namaLengkap != null) {
+                        // Menggabungkan id dan nama lengkap untuk format yang diinginkan
+                        String itemSpinner = id + " - " + namaLengkap;
+                        namaPasienList.add(itemSpinner);  // Menambah ke list
+                    }
+                }
+
+                // Memperbarui Spinner setelah data di-fetch
+                setNamaPasienToSpinner();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Menangani jika gagal mengambil data dari Firebase
+                Toast.makeText(AbsensiActivity.this, "Error fetching data from Firebase", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /**
+     * Mengatur nama pasien yang sudah diambil ke dalam Spinner.
+     */
+    private void setNamaPasienToSpinner() {
+        // Menyiapkan ArrayAdapter untuk Spinner
+        adapter = new ArrayAdapter<>(AbsensiActivity.this, android.R.layout.simple_spinner_dropdown_item, namaPasienList);
+
+        // Set adapter ke Spinner
+        spinnerNamaPasien.setAdapter(adapter);
     }
 
     private void initListeners() {
@@ -106,7 +168,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
 
         ivHome.setOnClickListener(this);
         ivReminder.setOnClickListener(this);
-        ivAddAbsensi.setOnClickListener(this);
+
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
     }
@@ -233,15 +295,13 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         Intent intent;
         if (v.getId() == ivHome.getId()) {
-            intent = new Intent(this, MainActivity.class);
-        } else if (v.getId() == ivAddAbsensi.getId()) {
-            intent = new Intent(this, AbsensiActivity.class);
+            intent = new Intent(this, MonitorUsersActivity.class);
         } else if (v.getId() == ivReminder.getId()) {
             intent = new Intent(this, PengingatActivity.class);
         } else if (v.getId() == ivSettings.getId()) {
             intent = new Intent(this, DataIbuActivity.class);
         } else if (v.getId() == ivProfile.getId()) {
-            intent = new Intent(this, EdukasiActivity.class);
+            intent = new Intent(this, EdukasiBumilActivity.class);
         } else {
             return;
         }

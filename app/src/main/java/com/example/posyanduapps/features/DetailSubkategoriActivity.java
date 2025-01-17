@@ -1,6 +1,7 @@
 package com.example.posyanduapps.features;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import com.example.posyanduapps.models.DynamicContent;
 import java.util.Arrays;
 public class DetailSubkategoriActivity extends Activity {
     DynamicContent dynamicContent;
+    private int currentOption;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +26,7 @@ public class DetailSubkategoriActivity extends Activity {
 
         // Get data from intent
         String subkategoriNama = getIntent().getStringExtra("subkategori_nama");
-
+        intialize();
         // Set the title manually (TextView as title)
         TextView toolbarTitle = findViewById(R.id.tvTitle);
         toolbarTitle.setText(subkategoriNama);
@@ -42,17 +44,28 @@ public class DetailSubkategoriActivity extends Activity {
         // Ambil RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recyclerViewContent);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
-        // Set adapter untuk RecyclerView
-        DynamicContentAdapter adapter = new DynamicContentAdapter(this, getContentBySubkategori(subkategoriNama));
-        recyclerView.setAdapter(adapter);
-
+        if(currentOption ==1){
+            // Set adapter untuk RecyclerView
+            DynamicContentAdapter adapter = new DynamicContentAdapter(this, getContentBySubkategoriBayi(subkategoriNama));
+            recyclerView.setAdapter(adapter);
+        } else if (currentOption==2) {
+            // Set adapter untuk RecyclerView
+            DynamicContentAdapter adapter = new DynamicContentAdapter(this, getContentBySubkategoriLansia(subkategoriNama));
+            recyclerView.setAdapter(adapter);
+        } else if(currentOption==3) {
+            // Set adapter untuk RecyclerView
+            DynamicContentAdapter adapter = new DynamicContentAdapter(this, getContentBySubkategori(subkategoriNama));
+            recyclerView.setAdapter(adapter);
+        }
 //        // Set content based on the subcategory
 //        TextView contentText = findViewById(R.id.tvContent);
 //        contentText.setText(getContentBySubkategori(subkategoriNama));
     }
 
+    private void intialize(){
+        SharedPreferences sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
+        currentOption = sharedPreferences.getInt("currentOption",-1);
+    }
     private DynamicContent getContentBySubkategori(String subkategoriNama) {
 
         switch (subkategoriNama) {
@@ -210,6 +223,147 @@ public class DetailSubkategoriActivity extends Activity {
                 );
             // Kembalikan panduan perawatan sehari-hari ibu hamil
             return dynamicContent;
+        }
+    }
+
+    private DynamicContent getContentBySubkategoriBayi(String subkategoriNama) {
+        switch (subkategoriNama) {
+            case "Balita sehat untuk generasi emas":
+                dynamicContent = new DynamicContent(
+                        Arrays.asList(
+                                "Waspada Stunting dan Gizi Buruk:\n\n" +
+                                        "1. Pastikan anak mendapatkan gizi yang cukup dan seimbang agar tumbuh kembangnya optimal\n" +
+                                        "2. Stunting bisa berdapmapak pada pertumbuhan fisik dan kecerdasan si kecil.",
+                                "Vitamin dan Gizi\n\n" +
+                                        "1. Vitamin A:\t\tWortel dan Bayam.\n" +
+                                        "2. Vitamun C:\tJeruk dan Tomat.\n" +
+                                        "3. Vitamin D:\t\tIkan dan Telur.\n" +
+                                        "4. Kalsium :\tSusu dan Keju.\n" +
+                                        "5. Zat Besi :\tDaging dan Ayam."
+
+                        ),
+                        Arrays.asList(
+                                R.drawable.balita1_2,
+                                R.drawable.balita1_3
+
+                        )
+                );
+
+                return dynamicContent;
+
+            case "Aktivitas Balitaku":
+                dynamicContent = new DynamicContent(
+                        Arrays.asList(
+                                "Bermain sambil Belajar\n\n" +
+                                        "1. Puzzle.\n" +
+                                        "2. Balok.\n" +
+                                        "3. Permainan Peran\n",
+                                "Cerita & Lagu\n\n" +
+                                        "1. Buku Cerita.\n" +
+                                        "2. Bergambar.\n" +
+                                        "3. Lagu Edukatif.\n",
+                                "Makanan Seimbang\n\n" +
+                                        "1. Sayuran.\n" +
+                                        "2. Buah Buahan.\n" +
+                                        "3. Protein.\n" +
+                                        "4. Karbohidrat",
+                                "Eksplorasi Alam\n\n" +
+                                        "1. Mengenal Tumbuhan.\n" +
+                                        "2. Mengenal Hewan.\n" +
+                                        "3. Mengenal Cuaca",
+                                "Sosial & Kemandirian\n\n" +
+                                        "1. Bermain Bersama.\n" +
+                                        "2. Belajar Berbagi."
+                                       ),
+                        Arrays.asList(
+                                R.drawable.balita2_1,
+                                -1,
+                                R.drawable.balita2_2,
+                                -1,
+                                R.drawable.edukasi_balita2_2
+                        )
+                );
+
+                return dynamicContent;
+
+            default:
+                // Jika kategori tidak ditemukan, kembalikan pesan default
+                dynamicContent = new DynamicContent(
+                        Arrays.asList("Data Edukasi Balita Tidak Ditemukan"),
+                        Arrays.asList(R.drawable.masalah_lain)
+                );
+                // Kembalikan panduan perawatan sehari-hari ibu hamil
+                return dynamicContent;
+        }
+    }
+
+    private DynamicContent getContentBySubkategoriLansia(String subkategoriNama) {
+        switch (subkategoriNama) {
+            case "Jaga Tekanan Darah, Jauhkan Stroke!":
+                dynamicContent = new DynamicContent(
+                        Arrays.asList(
+                                "\n1. Mati rasa, kelemahan, atau lumpuh di wajah, lengan, atau kaki, terutama di satu sisi tubuh.\n"+
+                                "2. Sakit kepala hebat yang belum pernah dirasakan sebelumnya turut menjadi tanda timbulnya penyakit stroke. Rasa pusing sebagai gejala stroke disertai dengan tremor hingga sempoyongan.",
+                                "\n1. Pola makan sehat dan rutin olahraga\n" +
+                                "2. Rutin periksan tekanan darah dan menghindari makanan asin atau bergaram.",
+                                "\n1. Tekanan darah tinggi (hipertensi), Diabetes, Kolesterol tinggi, Kebiasaan merokok.\n" +
+                                        "2. Konsumsi alkohol berlebihan. Pola makan tidak sehat (tinggi garam, lemak, dan gula)."
+                                ),
+                        Arrays.asList(
+                                R.drawable.lansia1_1,
+                                R.drawable.lansia1_2,
+                                R.drawable.lansia1_3
+                        )
+                );
+
+                return dynamicContent;
+
+            case "Bye Bye Diabetes!":
+                dynamicContent = new DynamicContent(
+                        Arrays.asList(
+                                "Mempertahankan Berat Badan Ideal\n" +
+                                        "Kelebihan berat badan dapat meningkatkan resistensi insulin, sehingga menjaga berat badan ideal menjadi langkah awal yang krusial.\n\n" +
+                                        "olahraga minimal 2-3x seminggu\n" +
+                                        "Aktivitas fisik secara teratur membantu mengontrol kadar gula darah, meningkatkan sensitivitas insulin, dan mendukung penurunan berat badan",
+                                "Mengelola Stress dengan Baik\n" +
+                                        "Stres dapat memicu pelepasan hormon stres yang dapat meningkatkan gula darah. Strategi mengelola stres, seperti meditasi, yoga, atau hobi yang menyenangkan.\n\n" +
+                                        "Makan Makanan yang Sehat\n" +
+                                        "Pola makan yang sehat dengan memperbanyak serat, sayuran, buah-buahan, dan mengurangi konsumsi gula serta lemak jenuh dapat membantu menjaga kadar gula darah dalam batas normal"
+
+                        ),
+                        Arrays.asList(
+                                R.drawable.lansia_2_1,
+                                R.drawable.lansia_2_2
+                        )
+                );
+
+                return dynamicContent;
+
+            case "Atur Pola Hidup Sehat":
+                dynamicContent = new DynamicContent(
+                        Arrays.asList(
+                                "\n1. Batasi konsumsi gula. garam, dan lemak secara berlebihan\n" +
+                                        "2. Rutin melakukan aktifitas fisik 30 menit sehari\n" +
+                                        "3. Tidak merokok atau terpapar asap rokok dan residu rokok\n" +
+                                        "4. Jaga berat bdan ideal dan cegah obesitas"
+
+                        ),
+                        Arrays.asList(
+                                R.drawable.lansia3_1
+
+                        )
+                );
+
+                return dynamicContent;
+
+            default:
+                // Jika kategori tidak ditemukan, kembalikan pesan default
+                dynamicContent = new DynamicContent(
+                        Arrays.asList("Data Edukasi Lansia Tidak Ditemukan"),
+                        Arrays.asList(R.drawable.masalah_lain)
+                );
+                // Kembalikan panduan perawatan sehari-hari ibu hamil
+                return dynamicContent;
         }
     }
 }

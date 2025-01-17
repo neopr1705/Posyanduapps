@@ -183,6 +183,9 @@ public class RegisterActivity extends Activity {
     private void navigateToLogin() {
         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
         startActivity(intent);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
         finish();
+
     }
 }

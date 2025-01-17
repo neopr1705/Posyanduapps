@@ -44,6 +44,7 @@
         <activity android:name=".LoginActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
+
         <activity android:name=".RegisterActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
@@ -54,12 +55,15 @@
         <activity android:name=".features.AbsensiActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
+        <activity android:name=".features.DashboardActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
         <!-- Aktivitas untuk Pengingat -->
         <activity android:name=".features.PengingatActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
         <!-- Aktivitas untuk Edukasi -->
-        <activity android:name=".features.EdukasiActivity"
+        <activity android:name=".features.EdukasiBumilActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
         <!-- Aktivitas untuk Data Ibu -->
@@ -68,22 +72,6 @@
             android:exported="true"
             android:launchMode="singleTask"/>
 
-        <activity
-            android:name=".features.FormPelayananKesehatanIbuHamilActivity"
-            android:exported="true"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".features.FormPelayananKesehatanBayiBaruLahirActivity"
-            android:exported="true"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".features.FormPelayananKesehatanIbuBersalinActivity"
-            android:exported="true"
-            android:launchMode="singleTask"/>
-        <activity
-            android:name=".features.FormPelayananKesehatanIbuNifasActivity"
-            android:exported="true"
-            android:launchMode="singleTask"/>
         <activity
             android:name=".features.MonitorUsersActivity"
             android:exported="true"

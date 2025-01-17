@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -29,6 +30,7 @@ public class ReminderAdapter extends ArrayAdapter<String> {
     private DatabaseHelper databaseHelper;
     private ExecutorService executorService;
     private Handler mainHandler;
+    private int currentOption;
 
     public ReminderAdapter(Context context, List<String> reminders) {
         super(context, 0, reminders);
@@ -39,6 +41,9 @@ public class ReminderAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
+
+
         if (position < 0 || position >= getCount()) {
             return null;  // Validate index
         }

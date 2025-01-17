@@ -44,7 +44,7 @@
 //            intent = new Intent(this, PengingatActivity.class);
 //            startActivity(intent);
 //        } else if (v.getId() == btnEdukasi.getId()) {
-//            intent = new Intent(this, EdukasiActivity.class);
+//            intent = new Intent(this, EdukasiBumilActivity.class);
 //            startActivity(intent);
 //        } else if (v.getId() == btnDataIbu.getId()) {
 //            intent = new Intent(this, DataIbuActivity.class);

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.example.posyanduapps.features.DashboardActivity;
 import com.example.posyanduapps.features.MonitorUsersActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -117,8 +118,9 @@ public class LoginActivity extends Activity {
                             editor.putString("currentTanggal", dbtangglahir);  // username yang didapat saat login
                             editor.putString("currentUsername", username);  // username yang didapat saat login
                             editor.apply();  // Menyimpan perubahan
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                             startActivity(intent);
+                            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                         }
                         finish(); // Close the LoginActivity
                         break;

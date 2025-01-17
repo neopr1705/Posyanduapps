@@ -47,7 +47,6 @@ public class UserAdapter extends BaseAdapter {
 
         User user = userList.get(position);
         TextView usernameTextView = convertView.findViewById(R.id.usernameTextView);
-
         usernameTextView.setText(user.getUsername());
 
         return convertView;

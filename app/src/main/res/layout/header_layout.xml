@@ -4,8 +4,33 @@
     android:layout_height="match_parent"
     android:background="@color/colorAccent"
     android:padding="16dp">
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_centerInParent="true"
+    android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/tvchoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
+        android:text="Pilihan Sekarang: "
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="10sp"
+        android:textStyle="bold" />
 
+    <ImageView
+        android:id="@+id/ivChoice"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="center"
+        android:src="@drawable/baby"
+        />
+</LinearLayout>
     <!-- Judul Header -->
     <TextView
         android:id="@+id/tvTitle"

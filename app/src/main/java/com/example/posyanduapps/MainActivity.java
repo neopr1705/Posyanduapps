@@ -1,28 +1,16 @@
 package com.example.posyanduapps;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.app.Activity;
 import android.content.Intent;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import com.example.posyanduapps.Helper.HeaderIconHelper;
 
 import com.example.posyanduapps.features.*;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends Activity implements View.OnClickListener {
 
@@ -59,7 +47,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //footer
         ivHome = findViewById(R.id.ivHome);
         ivReminder = findViewById(R.id.ivReminder);
-        ivAddAbsensi = findViewById(R.id.ivAddAbsensi);
+
         ivProfile = findViewById(R.id.ivProfile);
         ivSettings = findViewById(R.id.ivSettings);
 
@@ -101,7 +89,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
         else if (v.getId() == ivProfile.getId()) {
-            intent = new Intent(this, EdukasiActivity.class);
+            intent = new Intent(this, EdukasiBumilActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
         }
