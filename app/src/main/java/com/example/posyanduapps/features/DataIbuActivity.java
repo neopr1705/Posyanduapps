@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,12 +16,20 @@ import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.posyanduapps.R;
+import com.example.posyanduapps.RegisterActivity;
 import com.example.posyanduapps.models.FormDataIbu;
 import android.content.Context;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.example.posyanduapps.Helper.HeaderIconHelper;
+import com.example.posyanduapps.utils.FirebaseManager;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 
 public class DataIbuActivity extends Activity implements View.OnClickListener {
 
@@ -44,7 +54,12 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
             etLingkarLenganBumil, etStatusObatVaksinBumil, etRiwayatPenyakitBumil;
 
 
-    private Button btnSimpan;
+    private Button btnSimpan,btnHapus;
+
+    private String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+    SharedPreferences UserPreferences;
+    String Userbucket;
 
     private ImageView logout;
 
@@ -58,10 +73,14 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
 
         initializeIncludes();
         setupUIclass();
+
         // Set up the save button click listener
         setupSaveButton();
+        setupHapusButton();
 
     }
+
+
 
     // Fungsi untuk menghasilkan sample data FormDataIbu
     // Initialize UI components
@@ -100,6 +119,7 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
     private void initializeIncludes(){
         SharedPreferences sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
         currentOption = sharedPreferences.getInt("currentOption",-1);
+        Userbucket = UserPreferences.getString("BucketUser","");
         View headerLayout = findViewById(R.id.header_layout);
         // Inisialisasi HeaderIconHelper
         new HeaderIconHelper(this, headerLayout);
@@ -135,8 +155,11 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
     }
     private void initializeUI() {
 
+        UserPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
+
         tvPemeriksaanTitle = findViewById(R.id.tvPemeriksaanTitle);
         btnSimpan = findViewById(R.id.btn_simpan);
+        btnHapus = findViewById(R.id.btn_clearfields);
 
         // Inisialisasi variabel untuk Balita
         etBeratBadanBayi = findViewById(R.id.et_berat_badan_bayi);
@@ -206,6 +229,9 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
     private void setupSaveButton() {
         btnSimpan.setOnClickListener(v -> saveFormData());
     }
+    private void setupHapusButton(){
+        btnHapus.setOnClickListener(v -> resetAllEditText());
+    }
     // Save the form data
     private void saveFormData() {
         // Ambil data dari EditText
@@ -214,6 +240,7 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
         String lingkarKepalaBayi = etLingkarKepalaBayi.getText().toString();
         String statusObatVaksinBayi = etStatusObatVaksinBayi.getText().toString();
         String riwayatPenyakitBayi = etRiwayatPenyakitBayi.getText().toString();
+
 
         String beratBadanLansia = etBeratBadanLansia.getText().toString();
         String tinggiBadanLansia = etTinggiBadanLansia.getText().toString();
@@ -229,21 +256,76 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
         String statusObatVaksinBumil = etStatusObatVaksinBumil.getText().toString();
         String riwayatPenyakitBumil = etRiwayatPenyakitBumil.getText().toString();
 
-        // Buat pesan konfirmasi
-        String confirmationMessage = createConfirmationMessage(
-                beratBadanBayi, tinggiBadanBayi, lingkarKepalaBayi, statusObatVaksinBayi, riwayatPenyakitBayi,
-                beratBadanLansia, tinggiBadanLansia, lingkarKepalaLansia, lingkarPerutLansia, statusObatLansia, riwayatPenyakitLansia,
-                beratBadanBumil, tinggiBadanBumil, lingkarKepalaBumil, lingkarLenganBumil, statusObatVaksinBumil, riwayatPenyakitBumil);
+        if(currentOption==1){
+            if(beratBadanBayi.equalsIgnoreCase("")||
+                    tinggiBadanBayi.equalsIgnoreCase("")||
+                    lingkarKepalaBayi.equalsIgnoreCase("")||
+                    statusObatVaksinBayi.equalsIgnoreCase("")||
+                    riwayatPenyakitBayi.equalsIgnoreCase("")){
+                showToast("Mohon isi semua kolom!");
+            }else{
+                // Buat pesan konfirmasi
+                String confirmationMessage = createConfirmationMessage(
+                        beratBadanBayi, tinggiBadanBayi, lingkarKepalaBayi, statusObatVaksinBayi, riwayatPenyakitBayi,
+                        beratBadanLansia, tinggiBadanLansia, lingkarKepalaLansia, lingkarPerutLansia, statusObatLansia, riwayatPenyakitLansia,
+                        beratBadanBumil, tinggiBadanBumil, lingkarKepalaBumil, lingkarLenganBumil, statusObatVaksinBumil, riwayatPenyakitBumil);
 
-        hexID = confirmationMessage.hashCode();
-        // Tampilkan dialog konfirmasi
-        showDialogConfirmation(confirmationMessage,hexID);
+                hexID = confirmationMessage.hashCode();
+                // Tampilkan dialog konfirmasi
+                showDialogConfirmation(hexID);
+            }
+        }else if(currentOption==2){
+            if(beratBadanLansia.equalsIgnoreCase("")||tinggiBadanLansia.equalsIgnoreCase("")||lingkarKepalaLansia.equalsIgnoreCase("")||lingkarPerutLansia.equalsIgnoreCase("")||statusObatLansia.equalsIgnoreCase("")||riwayatPenyakitLansia.equalsIgnoreCase("")){
+                showToast("Mohon isi semua kolom!");
+            }else{
+                // Buat pesan konfirmasi
+                String confirmationMessage = createConfirmationMessage(
+                        beratBadanBayi, tinggiBadanBayi, lingkarKepalaBayi, statusObatVaksinBayi, riwayatPenyakitBayi,
+                        beratBadanLansia, tinggiBadanLansia, lingkarKepalaLansia, lingkarPerutLansia, statusObatLansia, riwayatPenyakitLansia,
+                        beratBadanBumil, tinggiBadanBumil, lingkarKepalaBumil, lingkarLenganBumil, statusObatVaksinBumil, riwayatPenyakitBumil);
+
+                hexID = confirmationMessage.hashCode();
+                // Tampilkan dialog konfirmasi
+                showDialogConfirmation(hexID);
+            }
+
+        }else if(currentOption==3){
+            if(beratBadanBumil.equalsIgnoreCase("")||tinggiBadanBumil.equalsIgnoreCase("")||lingkarKepalaBumil.equalsIgnoreCase("")||lingkarLenganBumil.equalsIgnoreCase("")||statusObatVaksinBumil.equalsIgnoreCase("")||riwayatPenyakitBumil.equalsIgnoreCase("")){
+                showToast("Mohon isi semua kolom!");
+            }else{
+
+                String confirmationMessage = createConfirmationMessage(
+                        beratBadanBayi, tinggiBadanBayi, lingkarKepalaBayi, statusObatVaksinBayi, riwayatPenyakitBayi,
+                        beratBadanLansia, tinggiBadanLansia, lingkarKepalaLansia, lingkarPerutLansia, statusObatLansia, riwayatPenyakitLansia,
+                        beratBadanBumil, tinggiBadanBumil, lingkarKepalaBumil, lingkarLenganBumil, statusObatVaksinBumil, riwayatPenyakitBumil);
+
+                hexID = confirmationMessage.hashCode();
+                // Tampilkan dialog konfirmasi
+                showDialogConfirmation(hexID);
+            }
+
+
+        }
+
+
     }
 
     // Create a confirmation message to show after saving the form data
     private String createConfirmationMessage(String... values) {
-
+        DatabaseReference database = FirebaseDatabase.getInstance(url).getReference();
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("id",ServerValue.TIMESTAMP);
         if(currentOption==1){
+            data.put("berat_badan",values[0]);
+            data.put("tinggi_badan",values[1]);
+            data.put("lingkar_kepala",values[2]);
+            data.put("status_obat_vaksin",values[3]);
+            data.put("riwayat_penyakit",values[4]);
+            database.child("users")
+                    .child(Userbucket)
+                    .child("data_user")
+                    .child("bayi").push()
+                    .setValue(data);
             return "Form Data Saved:\n" +
                     "\n- Berat Badan Bayi: " + values[0] +
                     "\n- Tinggi Badan Bayi: " + values[1] +
@@ -251,6 +333,17 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
                     "\n- Status Obat & Vaksin Bayi: " + values[3] +
                     "\n- Riwayat Penyakit Bayi: " + values[4];
         }else if(currentOption==2){
+            data.put("berat_badan",values[5]);
+            data.put("tinggi_badan",values[6]);
+            data.put("lingkar_kepala",values[7]);
+            data.put("lingkar_perut",values[8]);
+            data.put("status_obat_vaksin",values[9]);
+            data.put("riwayat_penyakit",values[10]);
+            database.child("users")
+                    .child(Userbucket)
+                    .child("data_user")
+                    .child("lansia").push()
+                    .setValue(data);
             return "Form Data Saved:\n" +
                     "\n- Berat Badan Lansia: " + values[5] +
                     "\n- Tinggi Badan Lansia: " + values[6] +
@@ -259,6 +352,17 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
                     "\n- Status Obat Lansia: " + values[9] +
                     "\n- Riwayat Penyakit Lansia: " + values[10];
         }else if(currentOption==3){
+            data.put("berat_badan",values[11]);
+            data.put("tinggi_badan",values[12]);
+            data.put("lingkar_kepala",values[13]);
+            data.put("lingkar_lengan",values[14]);
+            data.put("status_obat_vaksin",values[15]);
+            data.put("riwayat_penyakit",values[16]);
+            database.child("users")
+                    .child(Userbucket)
+                    .child("data_user")
+                    .child("bumil").push()
+                    .setValue(data);
             return "Form Data Saved:\n"
                     +"\n- Berat Badan Bumil: " + values[11] +
                     "\n- Tinggi Badan Bumil: " + values[12] +
@@ -271,21 +375,23 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
         return "";
     }
 
-    private void showDialogConfirmation(String message,int id) {
-        // Buat dialog menggunakan AlertDialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Konfirmasi Data");
-        builder.setMessage(message);
-        builder.setPositiveButton("Simpan", (dialog, which) -> {
-            // Simpan data di sini
+    private boolean areInputsValid(String... inputs) {
+        for (String input : inputs) {
+            if (TextUtils.isEmpty(input)) {
+                Toast.makeText(this, "Semua kolom harus diisi!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Updated saveUserToFirebase method
+    private void showDialogConfirmation(int id) {
+
             showToast("Data berhasil disimpan ke database dengan kode "+id+" !");
-            dialog.dismiss();
             resetAllEditText();
 
-        });
-        builder.setNegativeButton("Batal", (dialog, which) -> dialog.dismiss());
-        AlertDialog dialog = builder.create();
-        dialog.show();
+
     }
 
     private void showToast(String message) {

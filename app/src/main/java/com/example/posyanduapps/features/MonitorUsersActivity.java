@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -40,6 +41,8 @@ public class MonitorUsersActivity extends Activity  implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monitor_user);
         SharedPreferences sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
+
+
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("currentOption", 4);  // username yang didapat saat login
         editor.apply();  // Menyimpan perubahan
@@ -52,6 +55,21 @@ public class MonitorUsersActivity extends Activity  implements View.OnClickListe
 
 
         userListView = findViewById(R.id.userListView);
+        userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parentView, View view, int position, long id) {
+                // Ambil data pengguna yang dipilih berdasarkan posisi
+                User selectedUser = userList.get(position);
+
+                // Ambil ID pengguna yang dipilih
+                String userId = selectedUser.getId();
+
+                // Arahkan ke DetailUserActivity dan kirimkan ID pengguna
+                Intent intent = new Intent(MonitorUsersActivity.this, DetailUserActivity.class);
+                intent.putExtra("userId", userId);  // Mengirimkan ID user
+                startActivity(intent);
+            }
+        });
 
         ivLogout.setOnClickListener(v -> {
             Intent intent = new Intent(MonitorUsersActivity.this, LoginActivity.class);
@@ -75,7 +93,6 @@ public class MonitorUsersActivity extends Activity  implements View.OnClickListe
         ivProfile = findViewById(R.id.ivProfile);
         ivProfile.setImageResource(R.drawable.baseline_assignment_add_24);
         ivSettings = findViewById(R.id.ivSettings);
-        ivSettings.setVisibility(View.GONE);
         ivHome.setOnClickListener(this);
         ivReminder.setOnClickListener(this);
         ivProfile.setOnClickListener(this);

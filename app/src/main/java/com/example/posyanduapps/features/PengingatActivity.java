@@ -13,10 +13,17 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.Helper.DatabaseHelper;
 import com.example.posyanduapps.adapters.ReminderAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -33,6 +40,8 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
     private ImageView ivHome, ivReminder, ivProfile, ivSettings;
     private int currentOption;
     Switch swAktif;
+    private String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +106,7 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
             ivProfile.setImageResource(R.drawable.baseline_assignment_add_24);
             ivSettings.setVisibility(View.GONE);
 
+
         }
 
         setChoiceImage();
@@ -109,60 +119,85 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
         reminderList = new ArrayList<>();
         reminderAdapter = new ReminderAdapter(this, reminderList);
         lvReminders.setAdapter(reminderAdapter);
-        loadRemindersFromDatabase();
+        loadRemindersFromFirebase();
 
     }
 
-    private void loadRemindersFromDatabase() {
+    private void loadRemindersFromFirebase() {
+        SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
+
         // Pastikan reminderList sudah terinisialisasi
         if (reminderList == null) {
-            reminderList = new ArrayList<>();  // Inisialisasi jika belum ada
+            reminderList = new ArrayList<>();
         }
 
         // Hapus data yang ada sebelumnya
         reminderList.clear();
 
-        // Pastikan dbHelper telah terinisialisasi dengan benar
-        if (dbHelper != null) {
-            Cursor cursor = dbHelper.getAllAbsensi();  // Mengambil data dari database
+        // Referensi ke Firebase Realtime Database
+        DatabaseReference absensiRef = FirebaseDatabase.getInstance(url).getReference("absensi");
+        DatabaseReference usersRef = FirebaseDatabase.getInstance(url).getReference("users");
 
-            // Periksa apakah cursor valid dan ada data
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    String name = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_NAME));
-                    String tanggal = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_TANGGAL));
-                    String hari = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_HARI));
-                    String jam = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_JAM));
-                    String tempat = cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_TEMPAT));
-
-                    jam = jam.replace(":", ".");
-                    String reminderData = String.format("%s;%s;%s;%s;%s", name, tanggal, hari, tempat, jam);
-                    reminderList.add(reminderData);
-
-                } while (cursor.moveToNext());
-            } else {
-                // Menangani jika cursor tidak berisi data
-                Log.d("LoadReminders", "Tidak ada data dalam database.");
-                tvidentifierdb.setVisibility(View.VISIBLE);
-                // Opsional: Tampilkan pesan kepada pengguna jika perlu
-                // Toast.makeText(this, "Tidak ada pengingat", Toast.LENGTH_SHORT).show();
-            }
-
-            // Menutup cursor setelah digunakan
-            if (cursor != null) {
-                cursor.close();
-            }
-        } else {
-            // Menangani jika dbHelper belum terinisialisasi
-            Log.e("LoadReminders", "dbHelper belum terinisialisasi.");
-            tvidentifierdb.setVisibility(View.VISIBLE);
-            tvidentifierdb.setText("Database tidak tersedia");
-            // Opsional: Tampilkan pesan error kepada pengguna
-            // Toast.makeText(this, "Database tidak tersedia", Toast.LENGTH_SHORT).show();
+        // Dapatkan ID pengguna saat ini (misalnya dari sesi login)
+        String currentUserId = sharedPreferences.getString("currentUser","");; // Sesuaikan implementasi
+        if (currentUserId == null) {
+            Log.e("LoadReminders", "Pengguna belum login.");
+            return;
         }
 
-        // Update tampilan dengan adapter setelah data dimuat
-        reminderAdapter.notifyDataSetChanged();
+        // Ambil data absensi dari Firebase
+        absensiRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot absensiSnapshot : dataSnapshot.getChildren()) {
+                        String assignedTo = absensiSnapshot.child("assigned_to").getValue(String.class);
+                        String name = absensiSnapshot.child("nama").getValue(String.class);
+                        String tanggal = absensiSnapshot.child("tanggal").getValue(String.class);
+                        String hari = absensiSnapshot.child("hari").getValue(String.class);
+                        String jam = absensiSnapshot.child("jam").getValue(String.class);
+                        String tempat = absensiSnapshot.child("tempat").getValue(String.class);
+
+                        // Logika filter berdasarkan `currentOption`
+                        boolean isValidReminder = false;
+                        if (currentOption >= 1 && currentOption <= 3) {
+                            isValidReminder = currentUserId.equals(assignedTo);
+                        } else {
+                            isValidReminder = true; // Tampilkan semua jika currentOption selain 1-3
+                        }
+
+                        if (isValidReminder) {
+                            // Format jam untuk pengingat
+                            if (jam != null) {
+                                jam = jam.replace(":", ".");
+                            }
+
+                            // Gabungkan data pengingat
+                            String reminderData = String.format("%s;%s;%s;%s;%s", name, tanggal, hari, tempat, jam);
+                            reminderList.add(reminderData);
+                        }
+                    }
+
+                    // Update tampilan setelah data berhasil dimuat
+                    reminderAdapter.notifyDataSetChanged();
+
+                    // Sembunyikan indikator jika data ada
+                    tvidentifierdb.setVisibility(View.GONE);
+                } else {
+                    // Jika tidak ada data
+                    Log.d("LoadReminders", "Tidak ada data absensi.");
+                    tvidentifierdb.setVisibility(View.VISIBLE);
+                    tvidentifierdb.setText("Tidak ada pengingat");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("LoadReminders", "Gagal memuat data: " + databaseError.getMessage());
+                tvidentifierdb.setVisibility(View.VISIBLE);
+                tvidentifierdb.setText("Gagal memuat data");
+            }
+        });
     }
 
 

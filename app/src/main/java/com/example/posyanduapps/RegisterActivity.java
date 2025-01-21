@@ -79,7 +79,7 @@ public class RegisterActivity extends Activity {
         String alamatLengkap = etAlamatLengkap.getText().toString().trim();
         String tanggalLahir = etTanggalLahir.getText().toString().trim();
         String usiaKehamilan = etUsiaKehamilan.getText().toString().trim() + " minggu";
-        String nomorHp = "62" + etNomorHp.getText().toString().trim();
+        String nomorHp = "" + etNomorHp.getText().toString().trim();
         String username = etUsername.getText().toString().trim();
         String password = etPassword.getText().toString().trim();
 
@@ -108,8 +108,9 @@ public class RegisterActivity extends Activity {
         user.put("nomor_hp", nomorHp);
         user.put("username", username);
         user.put("password", password);
+        user.put("roles","user");
 
-        FirebaseManager.writeData("users/" + username, user, new FirebaseManager.FirebaseCallback<Void>() {
+        FirebaseManager.writeData("users/" + totalUserId, user, new FirebaseManager.FirebaseCallback<Void>() {
             @Override
             public void onSuccess(Void result) {
                 Toast.makeText(RegisterActivity.this, "Pendaftaran Berhasil!", Toast.LENGTH_SHORT).show();

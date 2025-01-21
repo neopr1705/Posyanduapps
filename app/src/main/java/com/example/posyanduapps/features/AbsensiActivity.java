@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.MainActivity;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.adapters.AbsensiAdapter;
+import com.example.posyanduapps.models.Absensi;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +34,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -47,7 +51,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     // Variables
     private String selectedTanggal, selectedHari, selectedJam;
     private String currentUser;
-    private ArrayList<String> absensiList;
+    private ArrayList<Absensi> absensiList;
     private AbsensiAdapter customAdapter;
     private Spinner spinnerNamaPasien;
     private ArrayList<String> namaPasienList;
@@ -75,6 +79,11 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         executorService = Executors.newSingleThreadExecutor();
         mainHandler = new Handler(Looper.getMainLooper());
         absensiList = new ArrayList<>();
+        SharedPreferences userPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
+        currentUser= userPreferences.getString("currentNama", null);
+        SharedPreferences.Editor editor= userPreferences.edit();
+        editor.putString("currentNama",currentUser);
+        editor.apply();
 
     }
 
@@ -131,14 +140,17 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     String id = snapshot.child("id").getValue(String.class);  // Mendapatkan id pasien
                     String namaLengkap = snapshot.child("nama_lengkap").getValue(String.class);  // Mendapatkan nama lengkap pasien
+                    String roles = snapshot.child("roles").getValue((String.class));
 
                     if (id != null && namaLengkap != null) {
 
+                            if(roles.equalsIgnoreCase("admin")&&roles!=null){
 
-                            // Menggabungkan id dan nama lengkap untuk format yang diinginkan
-                            String itemSpinner = id + " - " + namaLengkap;
-                            namaPasienList.add(itemSpinner);  // Menambah ke list
-
+                            }else {
+                                // Menggabungkan id dan nama lengkap untuk format yang diinginkan
+                                String itemSpinner = id + " - " + namaLengkap;
+                                namaPasienList.add(itemSpinner);  // Menambah ke list
+                            }
 
                     }
                 }
@@ -180,41 +192,51 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
 
     private void tambahHadir() {
         String nama = spinnerNamaPasien.getSelectedItem().toString();
-        String strNama = nama.split(" - ")[1];
+        String assignedTo = nama.split(" - ")[0]; // Mengambil ID dari nama
+        String strNama = nama.split(" - ")[1]; // Mengambil nama lengkap
         String tempat = edtTempat.getText().toString();
+        String hari = tvHari.getText().toString();
+
+        // Dapatkan nama admin yang sedang login (misalnya, dari sesi login)
+        String adminName = currentUser; // Implementasikan sesuai mekanisme login Anda
 
         if (isInputValid(strNama, tempat)) {
-            executorService.submit(() -> {
-                boolean isDuplicate = databaseHelper.checkDuplicateAbsensi(selectedTanggal, selectedJam, tempat);
+            // Referensi ke Firebase Realtime Database
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance(url).getReference("absensi");
 
-                mainHandler.post(() -> {
-                    if (isDuplicate) {
-                        showToast("Jadwal tidak tersedia");
-                    } else if (addAbsensiToDatabase(strNama, tempat)) {
-                        showToast("Absensi berhasil ditambahkan");
-                        clearInputFields();
-                    } else {
-                        showToast("Gagal menambahkan absensi");
-                    }
-                });
-            });
+            // Membuat ID unik untuk setiap absensi
+            String absensiId = assignedTo+strNama+tempat+hari;
+            int hashCode = absensiId.hashCode();
+            String newID=""+hashCode;
+            // Membuat objek Absensi
+            Absensi absensi = new Absensi(strNama, selectedTanggal, hari, selectedJam, tempat, assignedTo, adminName);
+            absensi.setId(newID);  // Set ID unik
+
+            // Simpan data ke Firebase
+            if (absensiId != null) {
+                databaseReference.child(newID).setValue(absensi)
+                        .addOnSuccessListener(unused -> {
+                            showToast("Absensi berhasil ditambahkan");
+                            absensiList.add(absensi);  // Menambahkan objek Absensi ke list
+                            customAdapter.notifyDataSetChanged();
+                            clearInputFields(); // Menghapus input
+                        })
+                        .addOnFailureListener(e -> showToast("Gagal menambahkan absensi: " + e.getMessage()));
+            } else {
+                showToast("Gagal membuat ID absensi");
+            }
         } else {
             showToast("Harap isi semua data!");
         }
     }
 
+
+
     private boolean isInputValid(String nama, String tempat) {
         return !nama.isEmpty() && !selectedTanggal.isEmpty() && !selectedHari.isEmpty() && !selectedJam.isEmpty() && !tempat.isEmpty();
     }
 
-    private boolean addAbsensiToDatabase(String nama, String tempat) {
-        boolean isInserted = databaseHelper.insertAbsensi(nama, selectedTanggal, selectedHari, selectedJam, tempat);
-        if (isInserted) {
-            absensiList.add(formatAbsensiString(nama, tempat));
-            customAdapter.notifyDataSetChanged();
-        }
-        return isInserted;
-    }
+
 
     private String formatAbsensiString(String nama, String tempat) {
         return "Nama: " + nama + "\n" +
@@ -233,25 +255,52 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     }
 
     private void loadAbsensiData() {
-        executorService.submit(() -> {
-            Cursor cursor = databaseHelper.getAllAbsensi();
-            mainHandler.post(() -> {
-                absensiList.clear();
-                while (cursor.moveToNext()) {
-                    absensiList.add(formatAbsensiFromCursor(cursor));
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(url).getReference("absensi");
+
+        // Mendapatkan data absensi dari root 'absensi' di Firebase
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                absensiList.clear(); // Bersihkan daftar absensi sebelumnya
+
+                // Iterasi melalui setiap child di node absensi
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String id = snapshot.child("id").getValue(String.class);
+                    String nama = snapshot.child("nama").getValue(String.class);
+                    String tanggal = snapshot.child("tanggal").getValue(String.class);
+                    String hari = snapshot.child("hari").getValue(String.class);
+                    String jam = snapshot.child("jam").getValue(String.class);
+                    String tempat = snapshot.child("tempat").getValue(String.class);
+                    String assignto = snapshot.child("assignedTo").getValue(String.class);
+                    String assginedby = snapshot.child("assginedby").getValue(String.class);
+
+                    // Membuat objek Absensi
+                    Absensi absensi = new Absensi(nama, tanggal, hari, jam, tempat,assignto,assginedby);
+                    absensi.setId(id);
+                    // Menambahkan objek Absensi ke dalam daftar absensiList
+                    absensiList.add(absensi);
                 }
+
+                // Perbarui adapter untuk menampilkan data baru
                 customAdapter.notifyDataSetChanged();
-                cursor.close();
-            });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Menangani jika terjadi error saat fetching data
+                Toast.makeText(AbsensiActivity.this, "Error fetching absensi data: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    private String formatAbsensiFromCursor(Cursor cursor) {
-        return "Nama: " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_NAME)) + "\n" +
-                "Tanggal: " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_TANGGAL)) + "\n" +
-                "Hari: " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_HARI)) + "\n" +
-                "Jam: " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_JAM)) + "\n" +
-                "Tempat: " + cursor.getString(cursor.getColumnIndex(DatabaseHelper.COLUMN_ABSENSI_TEMPAT));
+
+
+    private String formatAbsensiString(String nama, String tempat, String tanggal, String hari, String jam) {
+        return "Nama: " + nama + "\n" +
+                "Tanggal: " + tanggal + "\n" +
+                "Hari: " + hari + "\n" +
+                "Jam: " + jam + "\n" +
+                "Tempat: " + tempat;
     }
 
     private void showDatePickerDialog() {

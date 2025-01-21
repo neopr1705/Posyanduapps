@@ -1,9 +1,13 @@
 package com.example.posyanduapps.models;
+import android.os.Parcelable;
+import android.os.Parcel;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.google.firebase.database.PropertyName;
 
-public class User {
+public class User implements Parcelable {
     private String id;
     @PropertyName("nama_lengkap")
     private String namaLengkap;
@@ -17,10 +21,12 @@ public class User {
     private String nomorHp;
     private String username;
     private String password;
+    @PropertyName("roles")
+    private String roles;
 
     // Konstruktor tanpa argumen (default constructor)
     public User() {}
-    public User(String id, String namaLengkap, String alamatLengkap, String tanggalLahir, String usiaKehamilan, String nomorHp, String username, String password) {
+    public User(String id, String namaLengkap, String alamatLengkap, String tanggalLahir, String usiaKehamilan, String nomorHp, String username, String password,String roles) {
         this.namaLengkap = namaLengkap;
         this.alamatLengkap = alamatLengkap;
         this.tanggalLahir = tanggalLahir;
@@ -29,6 +35,7 @@ public class User {
         this.username = username;
         this.password = password;
         this.id = id;
+        this.roles = roles;
     }
 
 public String getId() {
@@ -78,4 +85,13 @@ public long castID(){
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+
+    }
 }

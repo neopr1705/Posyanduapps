@@ -98,18 +98,25 @@ public class LoginActivity extends Activity {
                     String dbnomorhp = userSnapshot.child("nomor_hp").getValue(String.class);
                     String dbusiakehamilan = userSnapshot.child("usia_kehamilan").getValue(String.class);
                     String dbtangglahir = userSnapshot.child("tanggal_lahir").getValue(String.class);
+                    String UserBucket = userSnapshot.getKey();//getThebucket of users
                     if (dbUsername != null && dbPassword != null &&
                             dbUsername.equals(username) && dbPassword.equals(password)) {
                         isAuthenticated = true;
 
                         // Jika autentikasi berhasil
                         if (username.equals("admin")) {
+                            SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("currentNama", dbNamaLengkap);  // username yang didapat saat login
+                            editor.apply();  // Menyimpan perubahan
                             Intent intent = new Intent(LoginActivity.this, MonitorUsersActivity.class);
                             startActivity(intent);
+
                         } else {
                             // Menyimpan username saat login
                             SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("BucketUser",UserBucket);//bucket dari user instead of id
                             editor.putString("currentUser", dbid);  // username yang didapat saat login
                             editor.putString("currentNama", dbNamaLengkap);  // username yang didapat saat login
                             editor.putString("currentAlamat", dbalamatLengkap);  // username yang didapat saat login
@@ -121,6 +128,8 @@ public class LoginActivity extends Activity {
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                             startActivity(intent);
                             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+
+
                         }
                         finish(); // Close the LoginActivity
                         break;
