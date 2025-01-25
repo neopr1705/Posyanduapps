@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+<include
+    layout="@layout/header_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>
+    <!-- Dropdown Spinner untuk memilih User -->
+    <TextView
+        android:id="@+id/userDropdownLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pilih User"
+        android:padding="10dp"/>
+    <Spinner
+        android:id="@+id/userDropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown"
+        android:padding="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <!-- Tombol 1 -->
+        <Button
+            android:id="@+id/bayiButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/button_base"
+            android:text="Balita"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_margin="10dp"/>
+
+        <!-- Tombol 2 -->
+        <Button
+            android:id="@+id/lansiaButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/button_base"
+            android:text="Lansia"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_margin="10dp"/>
+
+        <!-- Tombol 3 -->
+        <Button
+            android:id="@+id/bumilButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/button_base"
+            android:text="Ibu Hamil"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_margin="10dp"/>
+
+    </LinearLayout>
+
+<TextView
+    android:id="@+id/tvKategori"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Detail User"
+    android:textSize="20sp"
+    android:gravity="center"
+    android:padding="10dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <!-- LinearLayout untuk detail User -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <!-- ID -->
+
+            <ListView
+                android:id="@+id/listViewKesehatan"
+                android:layout_width="match_parent"
+                android:layout_height="385dp"
+                android:layout_marginTop="20dp"
+                android:divider="#E0E0E0"
+                android:dividerHeight="1dp" />
+
+            <TextView
+                android:id="@+id/userId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID:"
+                android:textSize="16sp" />
+
+            <!-- Nama Lengkap -->
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama Lengkap:"
+                android:textSize="16sp" />
+
+            <!-- Username -->
+            <TextView
+                android:id="@+id/userUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username:"
+                android:textSize="16sp" />
+
+            <!-- Nomor HP -->
+            <TextView
+                android:id="@+id/userPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nomor HP:"
+                android:textSize="16sp" />
+
+            <!-- Alamat Lengkap -->
+            <TextView
+                android:id="@+id/userAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Alamat Lengkap:"
+                android:textSize="16sp" />
+
+            <!-- Tanggal Lahir -->
+            <TextView
+                android:id="@+id/userBirthDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tanggal Lahir:"
+                android:textSize="16sp" />
+
+            <!-- Usia Kehamilan -->
+
+            <TextView
+                android:id="@+id/userPregnancyAge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Usia Kehamilan:"
+                android:textSize="16sp" />
+            <!-- Daftar Absensi -->
+
+        </LinearLayout>
+    </ScrollView>
+    <!-- Buttons Edit dan Delete -->
+    <include
+        layout="@layout/footer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+</LinearLayout>

@@ -20,7 +20,9 @@ import com.example.posyanduapps.RegisterActivity;
 import com.example.posyanduapps.models.FormDataIbu;
 import android.content.Context;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -314,6 +316,9 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
     private String createConfirmationMessage(String... values) {
         DatabaseReference database = FirebaseDatabase.getInstance(url).getReference();
         HashMap<String, Object> data = new HashMap<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); // Format tanggal
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");  // Format waktu
+        Date now = new Date();
         data.put("id",ServerValue.TIMESTAMP);
         if(currentOption==1){
             data.put("berat_badan",values[0]);
@@ -321,6 +326,8 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
             data.put("lingkar_kepala",values[2]);
             data.put("status_obat_vaksin",values[3]);
             data.put("riwayat_penyakit",values[4]);
+            data.put("tanggal",dateFormat.format(now));
+            data.put("jam",timeFormat.format(now));
             database.child("users")
                     .child(Userbucket)
                     .child("data_user")
@@ -339,6 +346,8 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
             data.put("lingkar_perut",values[8]);
             data.put("status_obat_vaksin",values[9]);
             data.put("riwayat_penyakit",values[10]);
+            data.put("tanggal",dateFormat.format(now));
+            data.put("jam",timeFormat.format(now));
             database.child("users")
                     .child(Userbucket)
                     .child("data_user")
@@ -358,6 +367,8 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
             data.put("lingkar_lengan",values[14]);
             data.put("status_obat_vaksin",values[15]);
             data.put("riwayat_penyakit",values[16]);
+            data.put("tanggal",dateFormat.format(now));
+            data.put("jam",timeFormat.format(now));
             database.child("users")
                     .child(Userbucket)
                     .child("data_user")

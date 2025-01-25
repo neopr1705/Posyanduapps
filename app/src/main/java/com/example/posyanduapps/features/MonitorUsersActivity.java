@@ -35,7 +35,7 @@ public class MonitorUsersActivity extends Activity  implements View.OnClickListe
     private String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
     private Intent intent;
 
-
+    private int option;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,13 +46,17 @@ public class MonitorUsersActivity extends Activity  implements View.OnClickListe
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("currentOption", 4);  // username yang didapat saat login
         editor.apply();  // Menyimpan perubahan
+        option = sharedPreferences.getInt("currentOption", 0);
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText("MONITOR USER (Admin)");
         ivLogout = findViewById(R.id.ivLogout);
-
+        Intent intent1 = new Intent(this,RecordActivity.class);
+        startActivity(intent1);
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
         initializeview();
 
-
+        loadUsers();
 
         userListView = findViewById(R.id.userListView);
         userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -79,7 +83,7 @@ public class MonitorUsersActivity extends Activity  implements View.OnClickListe
         });
 
 
-        loadUsers();
+
     }
 
     public void initializeview(){
@@ -143,10 +147,18 @@ public class MonitorUsersActivity extends Activity  implements View.OnClickListe
             finish();
         }
         else if (v.getId() == ivProfile.getId()) {
-            intent = new Intent(this, AbsensiActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-            finish();
+            if (option==4){
+                intent = new Intent(this, RecordActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                finish();
+
+            }else {
+                intent = new Intent(this, AbsensiActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                finish();
+            }
         }
     }
 }

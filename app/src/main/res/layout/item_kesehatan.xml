@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="?android:attr/selectableItemBackground">
+
+    <!-- Nama (ID atau Nama) -->
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nama/ID"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvTanggal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tanggal"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/tvJam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Jam"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+    <!-- Berat Badan -->
+    <TextView
+        android:id="@+id/berat_badan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Berat Badan: 18 kg"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Tinggi Badan -->
+    <TextView
+        android:id="@+id/tinggi_badan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tinggi Badan: 8 cm"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" />
+
+    <!-- Riwayat Penyakit -->
+    <TextView
+        android:id="@+id/riwayat_penyakit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Riwayat Penyakit: Pilek, Batuk"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" />
+
+    <!-- Status Obat/Vaksin -->
+    <TextView
+        android:id="@+id/status_vaksin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status Vaksin: Sudah"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" />
+
+    <!-- Lingkar Kepala (untuk bayi dan ibu hamil) -->
+    <TextView
+        android:id="@+id/lingkar_kepala"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lingkar Kepala: 6 cm"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" />
+
+    <!-- Lingkar Lengan (untuk bumil) -->
+    <TextView
+        android:id="@+id/lingkar_lengan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lingkar Lengan: 12 cm"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" />
+
+    <!-- Lingkar Perut (untuk lansia) -->
+    <TextView
+        android:id="@+id/lingkar_perut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lingkar Perut: 50 cm"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" />
+</LinearLayout>

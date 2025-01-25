@@ -80,7 +80,7 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
         lvReminders = findViewById(R.id.lvReminders);
         swAktif = findViewById(R.id.swAktif);
         SharedPreferences sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
-        currentOption = sharedPreferences.getInt("currentOption",-1);
+        currentOption = sharedPreferences.getInt("currentOption",4);
         if (currentOption ==3) {
             tvTitle.setText("Pengingat Jadwal Ibu Hamil");
             lvReminders.setVisibility(View.GONE);

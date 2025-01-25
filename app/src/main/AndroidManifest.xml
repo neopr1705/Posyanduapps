@@ -71,6 +71,10 @@
             android:name=".features.DataIbuActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
+        <activity
+            android:name=".features.RecordActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
 
         <activity
             android:name=".features.MonitorUsersActivity"
