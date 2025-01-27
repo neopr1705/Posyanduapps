@@ -99,12 +99,13 @@ public class LoginActivity extends Activity {
                     String dbusiakehamilan = userSnapshot.child("usia_kehamilan").getValue(String.class);
                     String dbtangglahir = userSnapshot.child("tanggal_lahir").getValue(String.class);
                     String UserBucket = userSnapshot.getKey();//getThebucket of users
+                    String roles = userSnapshot.child("roles").getValue(String.class);
                     if (dbUsername != null && dbPassword != null &&
                             dbUsername.equals(username) && dbPassword.equals(password)) {
                         isAuthenticated = true;
 
                         // Jika autentikasi berhasil
-                        if (username.equals("admin")) {
+                        if (roles.equals("admin")) {
                             SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("currentNama", dbNamaLengkap);  // username yang didapat saat login

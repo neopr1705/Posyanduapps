@@ -66,6 +66,9 @@
         <activity android:name=".features.EdukasiBumilActivity"
             android:exported="true"
             android:launchMode="singleTask"/>
+        <activity android:name=".features.ChartActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
         <!-- Aktivitas untuk Data Ibu -->
         <activity
             android:name=".features.DataIbuActivity"

@@ -41,6 +41,7 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
     private int currentOption;
     Switch swAktif;
     private String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
+    private ImageView ivChart;
 
 
     @Override
@@ -67,11 +68,12 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
         ivReminder = findViewById(R.id.ivReminder);
         ivProfile = findViewById(R.id.ivProfile);
         ivSettings = findViewById(R.id.ivSettings);
-
+        ivChart = findViewById(R.id.ivChart);
         ivHome.setOnClickListener(this);
         ivReminder.setOnClickListener(this);
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
+        ivChart.setOnClickListener(this);
 
         // Set the color for the reminder icon
         ivReminder.setColorFilter(getResources().getColor(R.color.softBlue));
@@ -102,9 +104,9 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
             ivchoice.setVisibility(View.GONE);
             TextView tvchoice = findViewById(R.id.tvchoice);
             tvchoice.setVisibility(View.GONE);
-
             ivProfile.setImageResource(R.drawable.baseline_assignment_add_24);
             ivSettings.setVisibility(View.GONE);
+            ivChart.setVisibility(View.GONE);
 
 
         }
@@ -252,6 +254,12 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
                 overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
                 finish();
             }
+        }
+        else if (v.getId() == ivChart.getId()) {
+            intent = new Intent(this, ChartActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
         }
     }
 }

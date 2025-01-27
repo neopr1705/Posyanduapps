@@ -25,7 +25,7 @@ public class EdukasiBumilActivity extends Activity implements View.OnClickListen
 
     private RecyclerView recyclerViewSubkategori;
     private SubkategoriAdapter subkategoriAdapter;
-    private ImageView ivHome, ivReminder, ivProfile, ivSettings;
+    private ImageView ivHome, ivReminder, ivProfile, ivSettings,ivChart;
     private Intent intent;
     private TextView tvTitle;
     private int currentOption;
@@ -35,6 +35,7 @@ public class EdukasiBumilActivity extends Activity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edukasi);
+
         View headerLayout = findViewById(R.id.header_layout);
         // Inisialisasi HeaderIconHelper
         new HeaderIconHelper(this, headerLayout);
@@ -55,7 +56,7 @@ public class EdukasiBumilActivity extends Activity implements View.OnClickListen
         //footer
         ivHome = findViewById(R.id.ivHome);
         ivReminder = findViewById(R.id.ivReminder);
-
+        ivChart = findViewById(R.id.ivChart);
         ivProfile = findViewById(R.id.ivProfile);
         ivSettings = findViewById(R.id.ivSettings);
 
@@ -63,6 +64,7 @@ public class EdukasiBumilActivity extends Activity implements View.OnClickListen
         ivReminder.setOnClickListener(this);
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
+        ivChart.setOnClickListener(this);
 
         recyclerViewSubkategori = findViewById(R.id.recyclerViewSubkategori);
         recyclerViewSubkategori.setLayoutManager(new GridLayoutManager(this, 1));
@@ -182,6 +184,13 @@ public class EdukasiBumilActivity extends Activity implements View.OnClickListen
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
+        }
+        else if(v.getId()==ivChart.getId()){
+            intent = new Intent(this, ChartActivity.class);
+             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish(); // Menghancurkan aktivitas saat ini
+
         }
     }
 }

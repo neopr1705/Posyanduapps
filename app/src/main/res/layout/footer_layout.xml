@@ -44,4 +44,13 @@
         android:tint="#FFFFFF"
         android:layout_margin="8dp"
         android:layout_weight="1" />
+
+    <ImageView
+        android:id="@+id/ivChart"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_chart"
+        android:tint="#FFFFFF"
+        android:layout_margin="8dp"
+        android:layout_weight="1" />
 </LinearLayout>

@@ -64,6 +64,7 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
     String Userbucket;
 
     private ImageView logout;
+    private ImageView ivChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,12 +147,14 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
         ivReminder = findViewById(R.id.ivReminder);
         ivProfile = findViewById(R.id.ivProfile);
         ivSettings = findViewById(R.id.ivSettings);
+        ivChart = findViewById(R.id.ivChart);
         ivSettings.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
 
         ivHome.setOnClickListener(this);
         ivReminder.setOnClickListener(this);
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
+        ivChart.setOnClickListener(this);
 
         setChoiceImage();
     }
@@ -162,6 +165,7 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
         tvPemeriksaanTitle = findViewById(R.id.tvPemeriksaanTitle);
         btnSimpan = findViewById(R.id.btn_simpan);
         btnHapus = findViewById(R.id.btn_clearfields);
+        ivChart = findViewById(R.id.ivChart);
 
         // Inisialisasi variabel untuk Balita
         etBeratBadanBayi = findViewById(R.id.et_berat_badan_bayi);
@@ -435,28 +439,36 @@ public class DataIbuActivity extends Activity implements View.OnClickListener {
         // Dapatkan aksi klik jika diperlukan
         if (v.getId() == ivHome.getId()) {
             intent = new Intent(this, DashboardActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             finish(); // Menghancurkan aktivitas saat ini
         } else if (v.getId() == ivReminder.getId()) {
             intent = new Intent(this, PengingatActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+           startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             finish(); // Menghancurkan aktivitas saat ini
         } else if (v.getId() == ivSettings.getId()) {
             intent = new Intent(this, DataIbuActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             finish(); // Menghancurkan aktivitas saat ini
         } else if (v.getId() == ivProfile.getId()) {
             intent = new Intent(this, EdukasiBumilActivity.class);
+             startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            finish(); // Menghancurkan aktivitas saat ini
+        }
+        else if(v.getId()==ivChart.getId()){
+            intent = new Intent(this, ChartActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             finish(); // Menghancurkan aktivitas saat ini
+
         }
     }
 

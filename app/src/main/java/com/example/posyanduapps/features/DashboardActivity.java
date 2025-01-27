@@ -16,6 +16,7 @@ import com.example.posyanduapps.R;
 public class DashboardActivity extends Activity {
     private Button btnBalita, btnLansia, btnBumil;
     private ImageView ivHome, ivReminder, ivProfile, ivSettings,ivChoice;
+    private ImageView ivChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,8 @@ public class DashboardActivity extends Activity {
         ivReminder = findViewById(R.id.ivReminder);
         ivProfile = findViewById(R.id.ivProfile);
         ivSettings = findViewById(R.id.ivSettings);
+        ivChart = findViewById(R.id.ivChart);
+
 
         removefooterIcon();
         btnBalita.setOnClickListener(new View.OnClickListener() {
@@ -82,5 +85,6 @@ public class DashboardActivity extends Activity {
         ivReminder.setVisibility(View.GONE);
         ivProfile.setVisibility(View.GONE);
         ivSettings.setVisibility(View.GONE);
+        ivChart.setVisibility(View.GONE);
     }
 }

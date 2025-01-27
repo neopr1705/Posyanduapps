@@ -57,6 +57,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation (libs.mpandroidchart)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.database)  // Or the latest version available
     testImplementation(libs.junit)

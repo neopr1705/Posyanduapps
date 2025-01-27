@@ -72,16 +72,12 @@
     android:text="Detail User"
     android:textSize="20sp"
     android:gravity="center"
-    android:padding="10dp" />
+    android:padding="1dp" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <!-- LinearLayout untuk detail User -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -90,8 +86,9 @@
             <ListView
                 android:id="@+id/listViewKesehatan"
                 android:layout_width="match_parent"
-                android:layout_height="385dp"
+                android:layout_height="match_parent"
                 android:layout_marginTop="20dp"
+                android:layout_weight="1"
                 android:divider="#E0E0E0"
                 android:dividerHeight="1dp" />
 
@@ -153,7 +150,6 @@
             <!-- Daftar Absensi -->
 
         </LinearLayout>
-    </ScrollView>
     <!-- Buttons Edit dan Delete -->
     <include
         layout="@layout/footer_layout"

@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.adapters.KesehatanAdapter;
 import com.example.posyanduapps.models.Kesehatan;
@@ -40,7 +41,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
     private Button lansiaButton;
     private Button bumilButton;
 
-    private ImageView ivLogout, ivHome, ivReminder, ivProfile, ivSettings;
+    private ImageView ivLogout, ivHome, ivReminder, ivProfile, ivSettings,ivChart;
     private DatabaseReference databaseReference;
     private Map<String, Map<String, String>> userDataMap = new HashMap<>();
     private ArrayList<String> userIds = new ArrayList<>();
@@ -58,8 +59,6 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         setContentView(R.layout.activity_record);
         initializeview();
         SharedPreferences sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
-
-
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("currentOption", 4);  // username yang didapat saat login
         editor.apply();  // Menyimpan perubahan
@@ -80,6 +79,10 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         userAddress = findViewById(R.id.userAddress);
         userBirthDate = findViewById(R.id.userBirthDate);
         userPregnancyAge = findViewById(R.id.userPregnancyAge);
+        ivChart = findViewById(R.id.ivChart);
+        ivChart.setVisibility(View.GONE);
+        new HeaderIconHelper(this, findViewById(R.id.header_layout));
+
 
         // Initialize Firebase Database
         databaseReference = FirebaseDatabase.getInstance(url).getReference("users");

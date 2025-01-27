@@ -61,6 +61,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     private ExecutorService executorService;
     private Handler mainHandler;
     String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
+    private ImageView ivChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +124,8 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         ivSettings = findViewById(R.id.ivSettings);
         ivSettings.setVisibility(View.GONE);
         new HeaderIconHelper(this, findViewById(R.id.header_layout));
+        ivChart = findViewById(R.id.ivChart);
+        ivChart.setVisibility(View.GONE);
 
     }
     private void fetchNamaPasienFromFirebase() {

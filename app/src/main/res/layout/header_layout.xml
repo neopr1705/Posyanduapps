@@ -5,7 +5,7 @@
     android:background="@color/colorAccent"
     android:padding="16dp">
 <LinearLayout
-    android:layout_width="wrap_content"
+    android:layout_width="60dp"
     android:layout_height="wrap_content"
     android:layout_alignParentStart="true"
     android:layout_centerInParent="true"
@@ -34,9 +34,10 @@
     <!-- Judul Header -->
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:textAlignment="center"
         android:text="@string/str_Daftar"
         android:textColor="#FFFFFF"
