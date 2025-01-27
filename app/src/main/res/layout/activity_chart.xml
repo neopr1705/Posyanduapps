@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/chart_container">
 
     <!-- Title TextView -->
     <include
@@ -15,16 +16,7 @@
     <!-- Konten Utama -->
 
 
-    <TextView
-        android:id="@+id/chart_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Timeline Berat Badan"
-        android:textSize="20sp"
-        android:textColor="@color/black"
-        android:layout_gravity="center"
-        android:fontFamily="sans-serif-medium"
-        android:paddingBottom="8dp" />
+
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/timeline_chart"

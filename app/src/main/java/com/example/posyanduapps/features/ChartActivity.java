@@ -1,17 +1,27 @@
 package com.example.posyanduapps.features;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,7 +31,9 @@ import com.example.posyanduapps.R;
 import com.example.posyanduapps.adapters.SubkategoriAdapter;
 import com.example.posyanduapps.models.Subkategori;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -30,6 +42,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.MPPointD;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,6 +52,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class ChartActivity extends Activity implements View.OnClickListener{
     private LineChart lineChart;
@@ -44,6 +60,12 @@ public class ChartActivity extends Activity implements View.OnClickListener{
     private ImageView ivChoice,ivHome, ivReminder, ivProfile, ivSettings,ivChart;
     private int currentOption;
     private Intent intent;
+    private XAxis xAxis;
+
+    private Context context;
+    // Menentukan warna-warna sesuai dengan warna dasar aplikasi
+    // Mendapatkan warna dari resources secara langsung tanpa ContextCompat
+
 
     String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
     private DatabaseReference databaseReference;
@@ -53,11 +75,105 @@ public class ChartActivity extends Activity implements View.OnClickListener{
         setContentView(R.layout.activity_chart);
         initView();
         currentView();
-
         setChoiceImage();
         setupChart();
         populateData();
+        setClickChart();
     }
+
+    private void setClickChart() {
+        // Mendapatkan referensi ke LineChart
+        lineChart = findViewById(R.id.timeline_chart);
+
+        // Menambahkan listener untuk mendeteksi ketika nilai chart dipilih
+        lineChart.setOnTouchListener(new View.OnTouchListener() {
+            private PopupWindow popupWindow;
+            private boolean isPopupVisible = false;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                float touchX = event.getX();
+                float touchY = event.getY();
+
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if (!isPopupVisible) {
+                            showPopup(v, touchX, touchY);
+                            isPopupVisible = true;
+                        }
+                        return true;
+
+                    case MotionEvent.ACTION_UP:
+                        if (isPopupVisible) {
+                            if (popupWindow != null && popupWindow.isShowing()) {
+                                popupWindow.dismiss();
+                            }
+                            isPopupVisible = false;
+                        }
+                        return true;
+                }
+                return false;
+            }
+
+            private void showPopup(View anchorView, float touchX, float touchY) {
+                if (popupWindow == null) {
+                    // Inisialisasi PopupWindow jika belum ada
+                    popupWindow = new PopupWindow(anchorView.getContext());
+                    View popupView = LayoutInflater.from(anchorView.getContext()).inflate(R.layout.popup_chart, null);
+                    popupWindow.setContentView(popupView);
+                    popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+                    popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+                    popupWindow.setOutsideTouchable(false);
+                    popupWindow.setFocusable(false);
+                    popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                }
+
+                // **Hitung posisi titik data terdekat**
+                Highlight highlight = lineChart.getHighlightByTouchPoint(touchX, touchY); // Dapatkan highlight dari koordinat
+                if (highlight != null) {
+                    Entry entry = lineChart.getEntryByTouchPoint(touchX, touchY); // Dapatkan data yang terkait
+                    MPPointD position = lineChart.getTransformer(YAxis.AxisDependency.LEFT)
+                            .getPixelForValues(entry.getX(), entry.getY());
+                    int popupX = (int) position.x; // Ambil nilai X dari MPPointD
+                    int popupY = (int) position.y; // Ambil nilai Y dari MPPointD
+
+// Jangan lupa untuk melepaskan MPPointD setelah digunakan
+                    MPPointD.recycleInstance(position);
+
+
+                    // Atur teks atau data popup (jika diperlukan)
+                    TextView popupText = popupWindow.getContentView().findViewById(R.id.popup_text);
+                    popupText.setText(xAxis.getFormattedLabel((int)entry.getX())+"\nValue: " + entry.getY());
+
+                    View chartView = findViewById(R.id.timeline_chart);
+                    int maxHeight = chartView.getHeight();
+
+                    popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+                    popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+                    // Batasi tinggi popup
+                    popupWindow.getContentView().measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+                    int popupHeight = popupWindow.getContentView().getMeasuredHeight();
+                    if (popupHeight > maxHeight) {
+                        popupWindow.setHeight(maxHeight); // Atur tinggi maksimal
+                    }
+
+
+
+// Tampilkan popup di lokasi yang diperoleh
+                    popupWindow.showAtLocation(anchorView, Gravity.NO_GRAVITY, popupX, Math.max(popupY - popupHeight, chartView.getTop()));
+                }
+            }
+        });
+    }
+
+        private String formatDate(float x) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis((long) x * 1000); // Jika x adalah timestamp
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        return sdf.format(calendar.getTime());
+    }
+
+
 
     private void setupChart() {
         // Set chart background and basic configurations
@@ -124,7 +240,7 @@ public class ChartActivity extends Activity implements View.OnClickListener{
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Iterasi setiap entry pada kategori "bayi"
-                int index = 1;  // Ini digunakan untuk X-Axis (Tanggal) sebagai indeks
+                int index = 0;  // Ini digunakan untuk X-Axis (Tanggal) sebagai indeks
                 for (DataSnapshot recordSnapshot : dataSnapshot.getChildren()) {
                     if (currentOption==1&&recordSnapshot.child("berat_badan").exists() && recordSnapshot.child("tinggi_badan").exists() && recordSnapshot.child("lingkar_kepala").exists()) {
                         String tanggal = recordSnapshot.child("tanggal").getValue(String.class);
@@ -208,42 +324,101 @@ public class ChartActivity extends Activity implements View.OnClickListener{
 
                     }
                 }
+
+                // Menampilkan isi dari ArrayList<Entry> entriesberatbadan
+                for (Entry entry : entriesberatbadan) {
+                    Log.d("datagrafik", "X: " + entry.getX() + ", Y: " + entry.getY());
+                }
+
+// Menampilkan isi dari ArrayList<Entry> entriestinggibadan
+                for (Entry entry : entriestinggibadan) {
+                    Log.d("datagrafik", "X: " + entry.getX() + ", Y: " + entry.getY());
+                }
+
+// Menampilkan isi dari ArrayList<Entry> entrieslingkarKepala
+                for (Entry entry : entrieslingkarKepala) {
+                    Log.d("datagrafik", "X: " + entry.getX() + ", Y: " + entry.getY());
+                }
+
+// Menampilkan isi dari ArrayList<Entry> entrieslingkarperut
+                for (Entry entry : entrieslingkarperut) {
+                    Log.d("datagrafik", "X: " + entry.getX() + ", Y: " + entry.getY());
+                }
+
+// Menampilkan isi dari ArrayList<Entry> entrieslingkarlengan
+                for (Entry entry : entrieslingkarlengan) {
+                    Log.d("datagrafik", "X: " + entry.getX() + ", Y: " + entry.getY());
+                }
+
+// Menampilkan isi dari ArrayList<String> dateLabels
+                for (String date : dateLabels) {
+                    Log.d("datagrafik", "Tanggal: " + date);
+                }
+
+
+
                 //tambah penggambaran data disini
+                int colorPrimary = getResources().getColor(R.color.colorPrimary); // Merah muda terang
+                int colorAccent = getResources().getColor(R.color.colorAccent); // Merah muda cerah
+                int colorlp = getResources().getColor(R.color.primaryDark); // Merah muda medium
+                int color3rd = getResources().getColor(R.color.color3rd); // Merah muda medium
+                int color4th = getResources().getColor(R.color.color4th); // Pink terang
+                int blackColor = getResources().getColor(R.color.black); // Hitam
+                int whiteColor = getResources().getColor(R.color.selected_button_color); // Putih
 
+
+// Dataset utama untuk Berat Badan
                 LineDataSet dataSet = new LineDataSet(entriesberatbadan, "Berat Badan");
-                dataSet.setColor(Color.BLUE);
-                dataSet.setValueTextColor(Color.DKGRAY);
-                dataSet.setCircleRadius(5f); // Highlight points
-                dataSet.setCircleColor(Color.RED);
-                dataSet.setLineWidth(2f);
+                dataSet.setColor(colorPrimary); // Merah muda terang
+                dataSet.setValueTextColor(blackColor); // Menghilangkan teks dari nilai
+                dataSet.setCircleRadius(5f);
+                dataSet.setCircleColor(colorAccent); // Merah muda cerah
+                dataSet.setLineWidth(3f); // Garis sedikit lebih tebal
+                dataSet.setDrawFilled(false); // Menghilangkan fill area bawah garis
+                dataSet.setDrawValues(false); // Menghilangkan teks dari nilai
 
+// Dataset utama untuk Tinggi Badan
                 LineDataSet dataSetTb = new LineDataSet(entriestinggibadan, "Tinggi Badan");
-                dataSetTb.setColor(Color.MAGENTA);
-                dataSetTb.setValueTextColor(Color.DKGRAY);
-                dataSetTb.setCircleRadius(5f); // Highlight points
-                dataSetTb.setCircleColor(Color.GREEN);
-                dataSetTb.setLineWidth(2f);
+                dataSetTb.setColor(color3rd); // Merah muda medium
+                dataSetTb.setValueTextColor(blackColor); // Menghilangkan teks dari nilai
+                dataSetTb.setCircleRadius(5f);
+                dataSetTb.setCircleColor(color4th); // Pink terang
+                dataSetTb.setLineWidth(3f); // Garis sedikit lebih tebal
+                dataSetTb.setDrawFilled(false); // Menghilangkan fill area bawah garis
+                dataSetTb.setDrawValues(false); // Menghilangkan teks dari nilai
 
+
+// Dataset utama untuk Lingkar Kepala
                 LineDataSet dataSetlk = new LineDataSet(entrieslingkarKepala, "Lingkar Kepala");
-                dataSetlk.setColor(Color.CYAN);
-                dataSetlk.setValueTextColor(Color.DKGRAY);
-                dataSetlk.setCircleRadius(5f); // Highlight points
-                dataSetlk.setCircleColor(Color.BLACK);
-                dataSetlk.setLineWidth(2f);
+                dataSetlk.setColor(whiteColor); // Putih
+                dataSetlk.setValueTextColor(blackColor); // Menghilangkan teks dari nilai
+                dataSetlk.setCircleRadius(5f);
+                dataSetlk.setCircleColor(colorPrimary); // Merah muda terang
+                dataSetlk.setLineWidth(3f); // Garis sedikit lebih tebal
+                dataSetlk.setDrawFilled(false); // Menghilangkan fill area bawah garis
+                dataSetlk.setDrawValues(false); // Menghilangkan teks dari nilai
 
+
+// Dataset utama untuk Lingkar Perut
                 LineDataSet dataSetlp = new LineDataSet(entrieslingkarperut, "Lingkar Perut");
-                dataSetlp.setColor(Color.YELLOW);
-                dataSetlp.setValueTextColor(Color.DKGRAY);
-                dataSetlp.setCircleRadius(5f); // Highlight points
-                dataSetlp.setCircleColor(Color.BLACK);
-                dataSetlp.setLineWidth(2f);
+                dataSetlp.setColor(colorlp); // Merah muda cerah
+                dataSetlp.setValueTextColor(blackColor); // Menghilangkan teks dari nilai
+                dataSetlp.setCircleRadius(5f);
+                dataSetlp.setCircleColor(color3rd); // Merah muda medium
+                dataSetlp.setLineWidth(3f); // Garis sedikit lebih tebal
+                dataSetlp.setDrawFilled(false); // Menghilangkan fill area bawah garis
+                dataSetlp.setDrawValues(false); // Menghilangkan teks dari nilai
 
-                LineDataSet dataSetll = new LineDataSet(entrieslingkarlengan, "Lingkar lengan");
-                dataSetll.setColor(Color.YELLOW);
-                dataSetll.setValueTextColor(Color.DKGRAY);
-                dataSetll.setCircleRadius(5f); // Highlight points
-                dataSetll.setCircleColor(Color.BLACK);
-                dataSetll.setLineWidth(2f);
+// Dataset utama untuk Lingkar Lengan
+                LineDataSet dataSetll = new LineDataSet(entrieslingkarlengan, "Lingkar Lengan");
+                dataSetll.setColor(colorlp); // Pink terang
+                dataSetll.setValueTextColor(blackColor); // Menghilangkan teks dari nilai
+                dataSetll.setCircleRadius(6f); // Radius lingkaran yang sedikit lebih besar
+                dataSetll.setCircleColor(color3rd); // Merah muda medium untuk lingkaran
+                dataSetll.setLineWidth(3f); // Ketebalan garis sedikit lebih besar
+                dataSetll.setDrawFilled(false); // Menghilangkan fill area bawah garis
+                dataSetll.setDrawValues(false); // Menghilangkan teks dari nilai
+
 
 
 
@@ -266,9 +441,8 @@ public class ChartActivity extends Activity implements View.OnClickListener{
                     lineData.addDataSet(dataSetll);
                 }
 
-                XAxis xAxis = lineChart.getXAxis();
+                xAxis = lineChart.getXAxis();
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(dateLabels));
-
 
                 // Tampilkan data ke LineChart
                 lineChart.setData(lineData);
