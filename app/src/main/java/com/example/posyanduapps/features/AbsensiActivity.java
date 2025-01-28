@@ -6,6 +6,7 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -70,9 +71,9 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
 
         initHelpers();
         initUI();
-        initListeners();
         fetchNamaPasienFromFirebase();
         loadAbsensiData();
+        initListeners();
     }
 
     private void initHelpers() {
@@ -182,7 +183,9 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     }
 
     private void initListeners() {
-        btnHadir.setOnClickListener(v -> tambahHadir());
+        btnHadir.setOnClickListener(v ->
+                tambahHadir()
+        );
         tvTanggal.setOnClickListener(v -> showDatePickerDialog());
         tvJam.setOnClickListener(v -> showTimePickerDialog());
 
@@ -194,48 +197,67 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     }
 
     private void tambahHadir() {
-        String nama = spinnerNamaPasien.getSelectedItem().toString();
-        String assignedTo = nama.split(" - ")[0]; // Mengambil ID dari nama
-        String strNama = nama.split(" - ")[1]; // Mengambil nama lengkap
-        String tempat = edtTempat.getText().toString();
-        String hari = tvHari.getText().toString();
+        if(spinnerNamaPasien.getSelectedItem()!=null&&
+                !edtTempat.getText().toString().isEmpty()&&
+                !tvTanggal.getText().toString().isEmpty()&&
+                !tvHari.getText().toString().isEmpty()&&
+                !tvJam.getText().toString().isEmpty()
+        )
+            {
+                String strNama = "",
+                        tempat = "",
+                        assignedTo = "",
+                        hari = "";
+                    String nama = spinnerNamaPasien.getSelectedItem().toString();
+                    assignedTo = nama.split(" - ")[0]; // Mengambil ID dari nama
+                    strNama = nama.split(" - ")[1]; // Mengambil nama lengkap
+                    tempat = edtTempat.getText().toString();
+                    hari = tvHari.getText().toString();
 
-        // Dapatkan nama admin yang sedang login (misalnya, dari sesi login)
-        String adminName = currentUser; // Implementasikan sesuai mekanisme login Anda
 
-        if (isInputValid(strNama, tempat)) {
-            // Referensi ke Firebase Realtime Database
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance(url).getReference("absensi");
+                // Dapatkan nama admin yang sedang login (misalnya, dari sesi login)
+                String adminName = currentUser; // Implementasikan sesuai mekanisme login Anda
 
-            // Membuat ID unik untuk setiap absensi
-            String absensiId = assignedTo+strNama+tempat+hari;
-            int hashCode = absensiId.hashCode();
-            String newID=""+hashCode;
-            // Membuat objek Absensi
-            Absensi absensi = new Absensi(strNama, selectedTanggal, hari, selectedJam, tempat, assignedTo, adminName);
-            absensi.setId(newID);  // Set ID unik
 
-            // Simpan data ke Firebase
-            if (absensiId != null) {
-                databaseReference.child(newID).setValue(absensi)
-                        .addOnSuccessListener(unused -> {
-                            showToast("Absensi berhasil ditambahkan");
-                            absensiList.add(absensi);  // Menambahkan objek Absensi ke list
-                            customAdapter.notifyDataSetChanged();
-                            clearInputFields(); // Menghapus input
-                        })
-                        .addOnFailureListener(e -> showToast("Gagal menambahkan absensi: " + e.getMessage()));
-            } else {
-                showToast("Gagal membuat ID absensi");
-            }
-        } else {
+                    // Referensi ke Firebase Realtime Database
+                    DatabaseReference databaseReference = FirebaseDatabase.getInstance(url).getReference("absensi");
+
+                    // Membuat ID unik untuk setiap absensi
+                    String absensiId = assignedTo + strNama + tempat + hari;
+                    int hashCode = absensiId.hashCode();
+                    String newID = "" + hashCode;
+                    // Membuat objek Absensi
+                    Absensi absensi = new Absensi(strNama, selectedTanggal, hari, selectedJam, tempat, assignedTo, adminName);
+                    absensi.setId(newID);  // Set ID unik
+
+                    // Simpan data ke Firebase
+                    if (absensiId != null) {
+                        databaseReference.child(newID).setValue(absensi)
+                                .addOnSuccessListener(unused -> {
+                                    showToast("Absensi berhasil ditambahkan");
+                                    absensiList.add(absensi);  // Menambahkan objek Absensi ke list
+                                    customAdapter.notifyDataSetChanged();
+                                    clearInputFields(); // Menghapus input
+                                })
+                                .addOnFailureListener(e -> showToast("Gagal menambahkan absensi: " + e.getMessage()));
+                    } else {
+                        showToast("Gagal membuat ID absensi");
+                    }
+
+            }else{
             showToast("Harap isi semua data!");
         }
+
     }
 
 
 
     private boolean isInputValid(String nama, String tempat) {
+        Log.d("dataHadir","datahadir->"+nama.toString()+
+                "\n"+selectedTanggal.toString()+
+                "\n"+selectedHari.toString()+
+                "\n"+selectedJam.toString()+
+                tempat.toString());
         return !nama.isEmpty() && !selectedTanggal.isEmpty() && !selectedHari.isEmpty() && !selectedJam.isEmpty() && !tempat.isEmpty();
     }
 

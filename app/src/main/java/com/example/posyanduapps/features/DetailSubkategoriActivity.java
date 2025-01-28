@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.R;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -65,6 +68,11 @@ public class DetailSubkategoriActivity extends Activity {
     private void intialize(){
         SharedPreferences sharedPreferences = getSharedPreferences("Option", MODE_PRIVATE);
         currentOption = sharedPreferences.getInt("currentOption",-1);
+        View headerLayout = findViewById(R.id.header_layout);
+        new HeaderIconHelper(this,headerLayout);
+        ImageView ivLogout = headerLayout.findViewById(R.id.ivLogout);
+        ivLogout.setVisibility(View.GONE);
+
     }
     private DynamicContent getContentBySubkategori(String subkategoriNama) {
 

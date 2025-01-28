@@ -42,6 +42,17 @@ public class HeaderIconHelper implements View.OnClickListener {
         ivLogout.setOnClickListener(this);
         ivChoice.setOnClickListener(this);
 
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Option", MODE_PRIVATE);
+        int currentOption = sharedPreferences.getInt("currentOption", -1);
+        if (currentOption == 1) {
+            ivChoice.setImageResource(R.drawable.baby);
+        } else if (currentOption ==2) {
+            ivChoice.setImageResource(R.drawable.elder);
+        } else if (currentOption ==3) {
+            ivChoice.setImageResource(R.drawable.ic_mom);
+        }
+
+
     }
 
     @Override
