@@ -36,12 +36,7 @@ public class DashboardActivity extends Activity {
         TextView tvWelcome = findViewById(R.id.tvWelcome);
         tvWelcome.setText("Selamat Datang,"+NamaLengkap);
 
-        int currentchoice = sharedPreferences.getInt("currentOption", -1);
-        if(currentchoice==4){
-            Intent intent = new Intent(DashboardActivity.this, MonitorUsersActivity.class);
-            startActivity(intent);
-            finish();
-        }
+
 
         Log.d("Bucket","User Bucket sekarang: "+Userbucket);
 
@@ -85,6 +80,16 @@ public class DashboardActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        int currentchoice = UserPreferences.getInt("currentOption", 0);
+        Log.d("currentchoice",""+currentchoice);
+        if(currentchoice==4){
+            Intent intent = new Intent(DashboardActivity.this, MonitorUsersActivity.class);
+            startActivity(intent);
+            finish();
+        }else{
+
+        }
     }
 
     public void removefooterIcon(){

@@ -125,7 +125,9 @@ public class LoginActivity extends Activity {
                             editor.putString("currentUsiaKehamilan", dbusiakehamilan);  // username yang didapat saat login
                             editor.putString("currentTanggal", dbtangglahir);  // username yang didapat saat login
                             editor.putString("currentUsername", username);  // username yang didapat saat login
+                            editor.putInt("currentOption", 0);
                             editor.apply();  // Menyimpan perubahan
+
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);
                             startActivity(intent);
                             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
