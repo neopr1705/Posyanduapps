@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.posyanduapps.Helper.DatabaseHelper;
 import com.example.posyanduapps.Helper.HeaderIconHelper;
+import com.example.posyanduapps.LoginActivity;
 import com.example.posyanduapps.MainActivity;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.adapters.AbsensiAdapter;
@@ -54,8 +55,9 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     private String currentUser;
     private ArrayList<Absensi> absensiList;
     private AbsensiAdapter customAdapter;
-    private Spinner spinnerNamaPasien;
+    private Spinner spinnerNamaPasien,etkategori;
     private ArrayList<String> namaPasienList;
+    private ArrayList<String> kategoriList;
     private ArrayAdapter<String> adapter;
     // Helpers
     private DatabaseHelper databaseHelper;
@@ -91,10 +93,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
 
     private void initUI() {
         // Inisialisasi Spinner dan List pasien
-        spinnerNamaPasien = findViewById(R.id.spinnerNamaPasien);
-        namaPasienList = new ArrayList<>();
-
-        // Ambil nama pasien dari Firebase dan set ke Spinner
+               // Ambil nama pasien dari Firebase dan set ke Spinner
 
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText( R.string.str_AbsensiKehadiran);
@@ -102,8 +101,12 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("currentOption", 4);  // username yang didapat saat login
         editor.apply();  // Menyimpan perubahan
-        edtTempat = findViewById(R.id.edtTempat);
 
+
+        edtTempat = findViewById(R.id.edtTempat);
+        spinnerNamaPasien = findViewById(R.id.spinnerNamaPasien);
+        namaPasienList = new ArrayList<>();
+        etkategori = findViewById(R.id.etkategori);
         tvTanggal = findViewById(R.id.tvTanggal);
         tvHari = findViewById(R.id.tvHari);
         tvJam = findViewById(R.id.tvJam);
@@ -127,6 +130,11 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         new HeaderIconHelper(this, findViewById(R.id.header_layout));
         ivChart = findViewById(R.id.ivChart);
         ivChart.setVisibility(View.GONE);
+        kategoriList = new ArrayList<>();
+        kategoriList.add("Bayi");
+        kategoriList.add("Lansia");
+        kategoriList.add("Bumil");
+        setKategoriToSpinner();
 
     }
     private void fetchNamaPasienFromFirebase() {
@@ -139,26 +147,31 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Clear daftar nama pasien sebelum menambahkan yang baru
                 namaPasienList.clear();
+                SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
+                String roles = sharedPreferences.getString("currentRoles", null);
+                if (roles.equalsIgnoreCase("admin")&&roles!=null){
+                    // Looping untuk mengambil data pasien (id dan nama_lengkap) dari Firebase
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String id = snapshot.child("id").getValue(String.class);  // Mendapatkan id pasien
+                        String namaLengkap = snapshot.child("nama_lengkap").getValue(String.class);  // Mendapatkan nama lengkap pasien
+                        String rolesfb = snapshot.child("roles").getValue(String.class);
 
-                // Looping untuk mengambil data pasien (id dan nama_lengkap) dari Firebase
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    String id = snapshot.child("id").getValue(String.class);  // Mendapatkan id pasien
-                    String namaLengkap = snapshot.child("nama_lengkap").getValue(String.class);  // Mendapatkan nama lengkap pasien
-                    String roles = snapshot.child("roles").getValue((String.class));
-
-                    if (id != null && namaLengkap != null) {
-
-                            if(roles.equalsIgnoreCase("admin")&&roles!=null){
-
-                            }else {
-                                // Menggabungkan id dan nama lengkap untuk format yang diinginkan
-                                String itemSpinner = id + " - " + namaLengkap;
-                                namaPasienList.add(itemSpinner);  // Menambah ke list
-                            }
-
+                       if (rolesfb!=null){
+                          if (!rolesfb.equalsIgnoreCase("admin")){
+                              if (id != null && namaLengkap != null) {
+                                  // Menggabungkan id dan nama lengkap untuk format yang diinginkan
+                                  String itemSpinner = id + " - " + namaLengkap;
+                                  namaPasienList.add(itemSpinner);  // Menambah ke list
+                              }
+                          }
+                       }
                     }
+                }else{
+                        showToast("Anda Bukan Admin !");
+                        Intent intent = new Intent(AbsensiActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        finish();
                 }
-
                 // Memperbarui Spinner setelah data di-fetch
                 setNamaPasienToSpinner();
             }
@@ -174,6 +187,12 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     /**
      * Mengatur nama pasien yang sudah diambil ke dalam Spinner.
      */
+    private void setKategoriToSpinner(){
+        // Menyiapkan ArrayAdapter untuk Spinner
+        adapter = new ArrayAdapter<>(AbsensiActivity.this, android.R.layout.simple_spinner_dropdown_item, kategoriList);
+        // Set adapter ke Spinner
+        etkategori.setAdapter(adapter);
+    }
     private void setNamaPasienToSpinner() {
         // Menyiapkan ArrayAdapter untuk Spinner
         adapter = new ArrayAdapter<>(AbsensiActivity.this, android.R.layout.simple_spinner_dropdown_item, namaPasienList);
@@ -199,6 +218,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
     private void tambahHadir() {
         if(spinnerNamaPasien.getSelectedItem()!=null&&
                 !edtTempat.getText().toString().isEmpty()&&
+                etkategori.getSelectedItem()!=null&&
                 !tvTanggal.getText().toString().isEmpty()&&
                 !tvHari.getText().toString().isEmpty()&&
                 !tvJam.getText().toString().isEmpty()
@@ -207,12 +227,14 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
                 String strNama = "",
                         tempat = "",
                         assignedTo = "",
-                        hari = "";
+                        hari = "",
+                        kategori = "";
                     String nama = spinnerNamaPasien.getSelectedItem().toString();
                     assignedTo = nama.split(" - ")[0]; // Mengambil ID dari nama
                     strNama = nama.split(" - ")[1]; // Mengambil nama lengkap
                     tempat = edtTempat.getText().toString();
                     hari = tvHari.getText().toString();
+                    kategori = etkategori.getSelectedItem().toString();
 
 
                 // Dapatkan nama admin yang sedang login (misalnya, dari sesi login)
@@ -227,7 +249,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
                     int hashCode = absensiId.hashCode();
                     String newID = "" + hashCode;
                     // Membuat objek Absensi
-                    Absensi absensi = new Absensi(strNama, selectedTanggal, hari, selectedJam, tempat, assignedTo, adminName);
+                    Absensi absensi = new Absensi(strNama, selectedTanggal, hari, selectedJam, tempat, assignedTo, adminName,kategori);
                     absensi.setId(newID);  // Set ID unik
 
                     // Simpan data ke Firebase
@@ -298,9 +320,10 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
                     String tempat = snapshot.child("tempat").getValue(String.class);
                     String assignto = snapshot.child("assignedTo").getValue(String.class);
                     String assginedby = snapshot.child("assginedby").getValue(String.class);
+                    String kategori = snapshot.child("kategori").getValue(String.class);
 
                     // Membuat objek Absensi
-                    Absensi absensi = new Absensi(nama, tanggal, hari, jam, tempat,assignto,assginedby);
+                    Absensi absensi = new Absensi(nama, tanggal, hari, jam, tempat,assignto,assginedby,kategori);
                     absensi.setId(id);
                     // Menambahkan objek Absensi ke dalam daftar absensiList
                     absensiList.add(absensi);

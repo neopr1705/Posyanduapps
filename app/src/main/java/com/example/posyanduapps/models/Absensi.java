@@ -12,12 +12,13 @@ public class Absensi {
     private String tempat;
     private String assignedTo;
     private String assginedby;
+    private String kategori;
 
     public Absensi() {
         // Diperlukan untuk Firebase
     }
 
-    public Absensi(String nama, String tanggal, String hari, String jam, String tempat,String assignedTo,String assginedby) {
+    public Absensi(String nama, String tanggal, String hari, String jam, String tempat,String assignedTo,String assginedby,String kategori) {
         this.nama = nama;
         this.tanggal = tanggal;
         this.hari = hari;
@@ -25,6 +26,7 @@ public class Absensi {
         this.tempat = tempat;
         this.assignedTo=assignedTo;
         this.assginedby=assginedby;
+        this.kategori = kategori;
     }
 
     public Absensi(String nama, String tanggal, String hari, String jam, String tempat) {
@@ -67,11 +69,18 @@ public class Absensi {
         return assignedTo;
     }
 
+    public String getKategori() {
+        return kategori;
+    }
+    public void setKategori(String kategori) {
+        this.kategori = kategori;
+    }
+
     public String getAssginedby() {
         return assginedby;
     }
     @Override
     public String toString() {
-        return "Nama: " + nama + "\nTanggal: " + tanggal + "\nHari: " + hari + "\nJam: " + jam + "\nTempat: " + tempat+"\nDibuat oleh: "+assginedby+"\nDibuat untuk: "+assignedTo;
+        return "Nama: " + nama +"\nKategori: "+ kategori+"\nTanggal: " + tanggal + "\nHari: " + hari + "\nJam: " + jam + "\nTempat: " + tempat+"\nDibuat oleh: "+assginedby+"\nDibuat untuk: "+assignedTo;
     }
 }

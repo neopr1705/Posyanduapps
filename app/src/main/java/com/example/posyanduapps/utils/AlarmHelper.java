@@ -22,7 +22,7 @@ public class AlarmHelper {
         intent.putExtra("ALARM_MESSAGE", message);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context, message.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, hour);
@@ -30,7 +30,7 @@ public class AlarmHelper {
         calendar.set(Calendar.SECOND, 0);
 
         if (alarmManager != null) {
-            Log.d("AlarmHelper", "Setting alarm for: "+message.hashCode() + hour + ":" + minute);
+            Log.d("AlarmHelper", "Setting alarm for: "+message + hour + ":" + minute);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }

@@ -109,6 +109,7 @@ public class LoginActivity extends Activity {
                             SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("currentNama", dbNamaLengkap);  // username yang didapat saat login
+                            editor.putString("currentRoles",roles);
                             editor.apply();  // Menyimpan perubahan
                             Intent intent = new Intent(LoginActivity.this, MonitorUsersActivity.class);
                             startActivity(intent);
@@ -126,6 +127,7 @@ public class LoginActivity extends Activity {
                             editor.putString("currentTanggal", dbtangglahir);  // username yang didapat saat login
                             editor.putString("currentUsername", username);  // username yang didapat saat login
                             editor.putInt("currentOption", 0);
+                            editor.putString("currentRoles",roles);
                             editor.apply();  // Menyimpan perubahan
 
                             Intent intent = new Intent(LoginActivity.this, DashboardActivity.class);

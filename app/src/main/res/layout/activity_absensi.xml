@@ -30,6 +30,17 @@
                 android:textColor="@color/secondaryText"
                 android:spinnerMode="dropdown" />
 
+            <Spinner
+                android:id="@+id/etkategori"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Kategori Jadwal"
+                android:backgroundTint="#4CAF50"
+                android:padding="10dp"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:spinnerMode="dropdown"/>
+
             <!-- Pilih Tanggal -->
 
             <!-- Pilih Hari -->
@@ -75,6 +86,7 @@
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:backgroundTint="#E0E0E0" />
+
 
             <!-- Tempat Posyandu -->
             <EditText

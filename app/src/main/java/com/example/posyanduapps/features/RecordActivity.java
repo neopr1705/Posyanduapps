@@ -45,6 +45,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
     private DatabaseReference databaseReference;
     private Map<String, Map<String, String>> userDataMap = new HashMap<>();
     private ArrayList<String> userIds = new ArrayList<>();
+    private ArrayList<String> spinnerData= new ArrayList<>();
     private String selectedUserId;
 
     String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
@@ -82,11 +83,8 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         ivChart = findViewById(R.id.ivChart);
         ivChart.setVisibility(View.GONE);
         new HeaderIconHelper(this, findViewById(R.id.header_layout));
-
-
         // Initialize Firebase Database
         databaseReference = FirebaseDatabase.getInstance(url).getReference("users");
-
         // Load users from Firebase
         loadUsers();
 
@@ -94,6 +92,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         userDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ClearListViewData();
                 selectedUserId = userIds.get(position);
                 displayUserData(selectedUserId);
 
@@ -112,7 +111,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         bayiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              Kategori.setText("Detail User - Bayi");
+
               loadDataBayi(userId.getText().toString());
 
             }
@@ -122,7 +121,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         lansiaButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Kategori.setText("Detail User - Lansia");
+
               loadDataLansia(userId.getText().toString());
             }
         });
@@ -131,7 +130,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         bumilButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Kategori.setText("Detail User - Bumil");
+
                 loadDataIbuHamil(userId.getText().toString());
             }
         });
@@ -146,12 +145,19 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
 
                     for (DataSnapshot userSnapshot : snapshot.getChildren()) {
                         String id = userSnapshot.getKey();
-                        Map<String, String> userData = (Map<String, String>) userSnapshot.getValue();
-                        userIds.add(id);
-                        userDataMap.put(id, userData);
+                        String nama = userSnapshot.child("nama_lengkap").getValue(String.class);
+                        String roles = userSnapshot.child("roles").getValue(String.class);
+                        if (roles!=null){
+                            if (!roles.equalsIgnoreCase("admin")){
+                                String dataList = id + " - " + nama;
+                                Map<String, String> userData = (Map<String, String>) userSnapshot.getValue();
+                                userIds.add(id);
+                                spinnerData.add(dataList);
+                                userDataMap.put(id, userData);
+                            }
+                        }
                     }
-
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, userIds);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, spinnerData);
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     userDropdown.setAdapter(adapter);
                 } else {
@@ -200,6 +206,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                     KesehatanAdapter adapter = new KesehatanAdapter(getApplicationContext(), kesehatanList);
                     ListView listView = findViewById(R.id.listViewKesehatan);
                     listView.setAdapter(adapter);
+                    Kategori.setText("Detail User - Bayi");
                 }
                 else {
                         // Jika data bayi kosong, tampilkan Toast
@@ -255,6 +262,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                     KesehatanAdapter adapter = new KesehatanAdapter(getApplicationContext(), kesehatanList);
                     ListView listView = findViewById(R.id.listViewKesehatan);
                     listView.setAdapter(adapter);
+                    Kategori.setText("Detail User - Lansia");
                 }
                 else {
                     // Jika data bayi kosong, tampilkan Toast
@@ -329,6 +337,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                     KesehatanAdapter adapter = new KesehatanAdapter(getApplicationContext(), kesehatanList);
                     ListView listView = findViewById(R.id.listViewKesehatan);
                     listView.setAdapter(adapter);
+                    Kategori.setText("Detail User - Bumil");
                 }
                 else {
                     // Jika data bayi kosong, tampilkan Toast
@@ -368,6 +377,11 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
             userPregnancyAge.setVisibility(View.GONE);
 
         }
+    }
+    private void ClearListViewData(){
+        ListView listView = findViewById(R.id.listViewKesehatan);
+        listView.setAdapter(null);
+
     }
 
     private void deleteUser(String userId) {

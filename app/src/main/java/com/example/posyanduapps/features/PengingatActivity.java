@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -42,6 +43,9 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
     Switch swAktif;
     private String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
     private ImageView ivChart;
+   SharedPreferences sharedPreferences;
+   DatabaseReference absensiRef,usersRef;
+   private boolean noData=true;
 
 
     @Override
@@ -85,16 +89,13 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
         currentOption = sharedPreferences.getInt("currentOption",4);
         if (currentOption ==3) {
             tvTitle.setText("Pengingat Jadwal Ibu Hamil");
-            lvReminders.setVisibility(View.GONE);
             tvidentifierdb.setVisibility(View.VISIBLE);
         }else if(currentOption ==1){
             tvTitle.setText("Pengingat Jadwal Balita");
-            lvReminders.setVisibility(View.GONE);
             tvidentifierdb.setVisibility(View.VISIBLE);
 
         }else if(currentOption ==2){
             tvTitle.setText("Pengingat Jadwal Lansia");
-            lvReminders.setVisibility(View.GONE);
             tvidentifierdb.setVisibility(View.VISIBLE);
 
         }else{
@@ -116,93 +117,185 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
     }
 
     private void initializeDatabase() {
+        sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
         dbHelper = new DatabaseHelper(this);
-
         reminderList = new ArrayList<>();
-        reminderAdapter = new ReminderAdapter(this, reminderList);
-        lvReminders.setAdapter(reminderAdapter);
         loadRemindersFromFirebase();
+        reminderAdapter = new ReminderAdapter(this, reminderList);
+
+        lvReminders.setAdapter(reminderAdapter);
+
+
 
     }
 
     private void loadRemindersFromFirebase() {
-        SharedPreferences sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE);
-
-        // Pastikan reminderList sudah terinisialisasi
-        if (reminderList == null) {
-            reminderList = new ArrayList<>();
-        }
-
-        // Hapus data yang ada sebelumnya
-        reminderList.clear();
+        String currentRoles = sharedPreferences.getString("currentRoles", "");
 
         // Referensi ke Firebase Realtime Database
-        DatabaseReference absensiRef = FirebaseDatabase.getInstance(url).getReference("absensi");
-        DatabaseReference usersRef = FirebaseDatabase.getInstance(url).getReference("users");
+        absensiRef = FirebaseDatabase.getInstance(url).getReference("absensi");
+        usersRef = FirebaseDatabase.getInstance(url).getReference("users");
+        String currentUserId = null;
+        if (currentRoles.equals("admin")) {
+            // Pastikan reminderList sudah terinisialisasi
+            if (reminderList == null) {
+                reminderList = new ArrayList<>();
+            }
+            // Hapus data yang ada sebelumnya
+            reminderList.clear();
 
-        // Dapatkan ID pengguna saat ini (misalnya dari sesi login)
-        String currentUserId = sharedPreferences.getString("currentUser","");; // Sesuaikan implementasi
-        if (currentUserId == null) {
-            Log.e("LoadReminders", "Pengguna belum login.");
-            return;
-        }
 
-        // Ambil data absensi dari Firebase
-        absensiRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot absensiSnapshot : dataSnapshot.getChildren()) {
-                        String assignedTo = absensiSnapshot.child("assigned_to").getValue(String.class);
-                        String name = absensiSnapshot.child("nama").getValue(String.class);
-                        String tanggal = absensiSnapshot.child("tanggal").getValue(String.class);
-                        String hari = absensiSnapshot.child("hari").getValue(String.class);
-                        String jam = absensiSnapshot.child("jam").getValue(String.class);
-                        String tempat = absensiSnapshot.child("tempat").getValue(String.class);
+            // Dapatkan ID pengguna saat ini (misalnya dari sesi login)
+            currentUserId = sharedPreferences.getString("currentUser", "");
+            ; // Sesuaikan implementasi
+            if (currentUserId == null) {
+                Log.e("LoadReminders", "Pengguna belum login.");
+                return;
+            }
 
-                        // Logika filter berdasarkan `currentOption`
-                        boolean isValidReminder = false;
-                        if (currentOption >= 1 && currentOption <= 3) {
-                            isValidReminder = currentUserId.equals(assignedTo);
-                        } else {
-                            isValidReminder = true; // Tampilkan semua jika currentOption selain 1-3
-                        }
+            // Ambil data absensi dari Firebase
+            String finalCurrentUserId = currentUserId;
+            absensiRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        for (DataSnapshot absensiSnapshot : dataSnapshot.getChildren()) {
+                            String assignedTo = absensiSnapshot.child("assigned_to").getValue(String.class);
+                            String name = absensiSnapshot.child("nama").getValue(String.class);
+                            String tanggal = absensiSnapshot.child("tanggal").getValue(String.class);
+                            String hari = absensiSnapshot.child("hari").getValue(String.class);
+                            String jam = absensiSnapshot.child("jam").getValue(String.class);
+                            String tempat = absensiSnapshot.child("tempat").getValue(String.class);
 
-                        if (isValidReminder) {
-                            // Format jam untuk pengingat
-                            if (jam != null) {
-                                jam = jam.replace(":", ".");
+                            // Logika filter berdasarkan `currentOption`
+                            boolean isValidReminder = false;
+                            if (currentOption >= 1 && currentOption <= 3) {
+                                isValidReminder = finalCurrentUserId.equals(assignedTo);
+                            } else {
+                                isValidReminder = true; // Tampilkan semua jika currentOption selain 1-3
                             }
 
-                            // Gabungkan data pengingat
-                            String reminderData = String.format("%s;%s;%s;%s;%s", name, tanggal, hari, tempat, jam);
-                            reminderList.add(reminderData);
+                            if (isValidReminder) {
+                                // Format jam untuk pengingat
+                                if (jam != null) {
+                                    jam = jam.replace(":", ".");
+                                }
+
+                                // Gabungkan data pengingat
+                                String reminderData = String.format("%s;%s;%s;%s;%s", name, tanggal, hari, tempat, jam);
+                                reminderList.add(reminderData);
+                              }
                         }
+
+                        // Update tampilan setelah data berhasil dimuat
+                        reminderAdapter.notifyDataSetChanged();
+                        // Sembunyikan indikator jika data ada
+                        tvidentifierdb.setVisibility(View.GONE);
+                    } else {
+                        // Jika tidak ada data
+                        Log.d("LoadReminders", "Tidak ada data absensi.");
+                        tvidentifierdb.setVisibility(View.VISIBLE);
+                        tvidentifierdb.setText("Tidak ada pengingat");
                     }
-
-                    // Update tampilan setelah data berhasil dimuat
-                    reminderAdapter.notifyDataSetChanged();
-
-                    // Sembunyikan indikator jika data ada
-                    tvidentifierdb.setVisibility(View.GONE);
-                } else {
-                    // Jika tidak ada data
-                    Log.d("LoadReminders", "Tidak ada data absensi.");
-                    tvidentifierdb.setVisibility(View.VISIBLE);
-                    tvidentifierdb.setText("Tidak ada pengingat");
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("LoadReminders", "Gagal memuat data: " + databaseError.getMessage());
-                tvidentifierdb.setVisibility(View.VISIBLE);
-                tvidentifierdb.setText("Gagal memuat data");
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Log.e("LoadReminders", "Gagal memuat data: " + databaseError.getMessage());
+                    tvidentifierdb.setVisibility(View.VISIBLE);
+                    tvidentifierdb.setText("Gagal memuat data");
+                }
+            });
+        } else if (currentRoles.equalsIgnoreCase("user")) {
+            SharedPreferences Option = getSharedPreferences("Option", MODE_PRIVATE);
+            int currentOption = Option.getInt("currentOption", 0);
+            String strCurrentOption = convertCurrentOption(currentOption);
+            String currentuid = sharedPreferences.getString("currentUser","");
+            if (reminderList == null) {
+                reminderList = new ArrayList<>();
             }
-        });
+            // Hapus data yang ada sebelumnya
+            reminderList.clear();
+            absensiRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshotabsen) {
+                    if (snapshotabsen.exists()) {
+                        for (DataSnapshot absensiSnapshot : snapshotabsen.getChildren()) {
+                            usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshotuser) {
+                                    if (snapshotuser.exists()) {
+                                        for (DataSnapshot userSnapshot : snapshotuser.getChildren()) {
+                                            if (absensiSnapshot.child("assignedTo").getValue(String.class).equals(userSnapshot.child("id").getValue(String.class))) {
+                                                if(absensiSnapshot.child("assignedTo").getValue(String.class).equals(currentuid)){
+                                                    if (absensiSnapshot.child("kategori").getValue(String.class) != null) {
+                                                        if (absensiSnapshot.child("kategori").getValue(String.class).equals(strCurrentOption)) {
+                                                            String NamaKontak = absensiSnapshot.child("assginedby").getValue(String.class);
+                                                            String idAlarm = absensiSnapshot.child("id").getValue(String.class);
+                                                            String tanggal = absensiSnapshot.child("tanggal").getValue(String.class);
+                                                            String hari = absensiSnapshot.child("hari").getValue(String.class);
+                                                            String jam = absensiSnapshot.child("jam").getValue(String.class);
+                                                            String tempat = absensiSnapshot.child("tempat").getValue(String.class);
+                                                            if (jam != null) {
+                                                                jam = jam.replace(":", ".");
+                                                            }
+                                                            String reminderData = String.format("%s;%s;%s;%s;%s", idAlarm, tanggal, hari, tempat, jam);
+                                                            reminderList.add(reminderData);
+                                                            noData=false;
+                                                            if(noData==false) {
+                                                                tvidentifierdb.setVisibility(View.GONE);
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                              }
+                                        }
+
+                                    }
+                                    reminderAdapter.notifyDataSetChanged();
+                                    // Jika tidak ada data dalam list, tampilkan Toast
+
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("LoadReminders", "Gagal memuat data: " + error.getMessage());
+                    tvidentifierdb.setVisibility(View.VISIBLE);
+                    tvidentifierdb.setText("Gagal memuat data");
+                }
+            });
+
+
+        }
+
     }
-
-
+    private String convertCurrentOption(int i){
+        if (i==1)
+            return "Bayi";
+        else if(i==2)
+            return "Lansia";
+        else if(i==3)
+            return "Bumil";
+        else
+            return "NoData";
+    }
+    private void LOGdebugnow(String m){
+        Log.d("debug now",m);
+    }
+    private void createToast(String m){
+        Toast.makeText(this, m, Toast.LENGTH_SHORT).show();
+    }
     private void setChoiceImage(){
         ImageView ivChoice = findViewById(R.id.ivChoice);
         if(currentOption == 1){
