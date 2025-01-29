@@ -26,38 +26,43 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.d("AlarmReceiver", "onReceive: ACTION = " + action); // Tambahkan log untuk debugging
 
         if (action != null) {
-            handleAction(context, action);
+            handleAction(context, intent, action); // ✅ Kirim intent sebagai parameter
+
         } else {
             handleNewAlarm(context, intent);
         }
     }
 
-    private void handleAction(Context context, String action) {
-        Log.d("AlarmReceiver", "handleAction: Received action = " + action); // Tambahkan log untuk melihat action yang diterima
+    private void handleAction(Context context, Intent intent, String action) {
+        Log.d("AlarmReceiver", "handleAction: Received action = " + action);
+
+        String alarmId = intent.getStringExtra("ALARM_ID"); // ✅ Sekarang intent sudah tersedia
 
         if ("OFF".equals(action)) {
-            turnOffAlarm(context);
+            turnOffAlarm(context, alarmId);
         } else if ("OK".equals(action)) {
             keepAlarmActive(context);
         } else {
-            Log.d("AlarmReceiver", "Unknown action: " + action); // Menangani aksi yang tidak dikenal
+            Log.d("AlarmReceiver", "Unknown action: " + action);
         }
     }
-
-    private void turnOffAlarm(Context context) {
-        Log.d("AlarmReceiver", "Turning off the alarm"); // Tambahkan log saat mematikan alarm
+    private void turnOffAlarm(Context context, String alarmId) {
+        Log.d("AlarmReceiver", "Turning off alarm with ID: " + alarmId);
         stopAlarmSound();
-        cancelNotification(context);
-        cancelAlarm(context);
-        showToast(context, "Alarm dimatikan");
+        cancelNotification(context, alarmId);
+        cancelAlarm(context, alarmId);
+        showToast(context, "Alarm " + alarmId + " dimatikan");
     }
 
-    private void cancelAlarm(Context context) {
+    private void cancelAlarm(Context context, String alarmId) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent cancelIntent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                context, Integer.parseInt(alarmId), cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
         if (alarmManager != null) {
-            alarmManager.cancel(pendingIntent); // Membatalkan alarm
+            alarmManager.cancel(pendingIntent); // Membatalkan alarm berdasarkan ID spesifik
+            Log.d("AlarmReceiver", "Alarm cancelled with ID: " + alarmId);
         }
     }
 
@@ -68,10 +73,13 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void handleNewAlarm(Context context, Intent intent) {
         String message = intent.getStringExtra("ALARM_MESSAGE");
+        String alarmId = intent.getStringExtra("ALARM_ID");
+
+        Log.d("AlarmReceiver", "Alarm triggered! ID: " + alarmId + ", Message: " + message);
 
         showToast(context, "Alarm: " + message);
         playAlarmSound(context);
-        showNotification(context, message);
+        showNotification(context, message, alarmId);
     }
 
     private void playAlarmSound(Context context) {
@@ -90,12 +98,12 @@ public class AlarmReceiver extends BroadcastReceiver {
         }
     }
 
-    private void cancelNotification(Context context) {
+    private void cancelNotification(Context context, String alarmId) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(0); // Menghilangkan notifikasi tanpa menggunakan alarmID
+        notificationManager.cancel(Integer.parseInt(alarmId));
     }
 
-    private void showNotification(Context context, String message) {
+    private void showNotification(Context context, String message, String alarmId) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -107,9 +115,8 @@ public class AlarmReceiver extends BroadcastReceiver {
             notificationManager.createNotificationChannel(channel);
         }
 
-        // Gunakan requestCode yang berbeda untuk membedakan pending intents
-        PendingIntent offPendingIntent = createPendingIntent(context, "OFF", 1);  // Gunakan 1 untuk OFF
-        PendingIntent okPendingIntent = createPendingIntent(context, "OK", 2);    // Gunakan 2 untuk OK
+        PendingIntent offPendingIntent = createPendingIntent(context, "OFF", alarmId, 1);
+        PendingIntent okPendingIntent = createPendingIntent(context, "OK", alarmId, 2);
 
         Notification notification = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -117,20 +124,24 @@ public class AlarmReceiver extends BroadcastReceiver {
                     .setContentTitle("Alarm!")
                     .setContentText(message)
                     .setSmallIcon(R.drawable.ic_alarm)
-                    .setAutoCancel(false) // Notifikasi tetap aktif sampai alarm dimatikan
+                    .setAutoCancel(false)
                     .addAction(-1, "Matikan", offPendingIntent)
                     .addAction(-1, "OK", okPendingIntent)
                     .build();
         }
 
-        notificationManager.notify(0, notification); // Gunakan angka 0 untuk notifikasi default
+        notificationManager.notify(Integer.parseInt(alarmId), notification); // Gunakan alarmId agar unik
     }
 
-    private PendingIntent createPendingIntent(Context context, String action, int requestCode) {
+
+    private PendingIntent createPendingIntent(Context context, String action, String alarmId, int requestCode) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("ACTION", action);
-        return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        intent.putExtra("ALARM_ID", alarmId);
+        return PendingIntent.getBroadcast(context, Integer.parseInt(alarmId) + requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
+
+
 
 
     private void showToast(Context context, String message) {
