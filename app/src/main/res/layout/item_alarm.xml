@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="8dp"
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +24,8 @@
             android:text="Nama:"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginEnd="5dp"/>
+            android:layout_marginEnd="5dp"
+            android:textColor="@color/black"/>
          <!-- Nama Alarm -->
         <TextView
             android:id="@+id/tvNamaAlarm"
@@ -32,16 +34,19 @@
             android:layout_marginBottom="8dp"
             android:text="asddasdasd"
             android:textSize="16sp"
+            android:textColor="@color/black"
             android:textStyle="bold" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:textColor="@color/black"
             android:layout_marginBottom="8dp">
         <TextView
             android:id="@+id/tvTitleTanggalAlarm"
             android:layout_width="wrap_content"
+            android:textColor="@color/black"
             android:layout_height="wrap_content"
             android:text="Tanggal :"
             android:layout_marginEnd="5dp"
@@ -51,6 +56,7 @@
             android:id="@+id/tvTanggalAlarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:layout_marginBottom="4dp"
             android:text=""
             android:textSize="12sp" />
@@ -63,6 +69,7 @@
         <TextView
             android:id="@+id/tvTitleHariAlarm"
             android:layout_width="wrap_content"
+            android:textColor="@color/black"
             android:layout_height="wrap_content"
             android:text="Hari :"
             android:layout_marginEnd="5dp"
@@ -74,6 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:text=""
+            android:textColor="@color/black"
             android:textSize="12sp" />
         </LinearLayout>
         <LinearLayout
@@ -86,6 +94,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Jam :"
+
+            android:textColor="@color/black"
             android:layout_marginEnd="5dp"
             android:textSize="14sp"/>
         <!-- Jam Alarm -->
@@ -93,6 +103,8 @@
             android:id="@+id/tvJamAlarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
+            android:textColor="@color/black"
             android:layout_marginBottom="4dp"
             android:text=""
             android:textSize="12sp" />
@@ -105,6 +117,7 @@
         <TextView
             android:id="@+id/tvTitleTempatAlarm"
             android:layout_width="wrap_content"
+            android:textColor="@color/black"
             android:layout_height="wrap_content"
             android:text="Tempat :"
             android:layout_marginEnd="5dp"
@@ -114,6 +127,7 @@
             android:id="@+id/tvTempatAlarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:layout_marginBottom="8dp"
             android:text=""
             android:textSize="12sp" />

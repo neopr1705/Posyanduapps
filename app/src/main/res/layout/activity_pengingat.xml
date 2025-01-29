@@ -28,7 +28,8 @@
         android:text="Daftar Pengingat :"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/tvidentifierDb"
@@ -39,7 +40,8 @@
                 android:textAlignment="center"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/black"/>
 
 
             <!-- ListView untuk menampilkan pengingat dari database -->
@@ -50,6 +52,7 @@
                 android:layout_weight="1"
                 android:divider="@android:color/darker_gray"
                 android:dividerHeight="1dp"
+                android:textColor="@color/black"
                 android:paddingTop="8dp" />
         </LinearLayout>
     <!-- Footer -->

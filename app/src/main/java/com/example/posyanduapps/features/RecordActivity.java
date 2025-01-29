@@ -1,6 +1,7 @@
 package com.example.posyanduapps.features;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.R;
+import com.example.posyanduapps.RegisterAdminActivity;
 import com.example.posyanduapps.adapters.KesehatanAdapter;
 import com.example.posyanduapps.models.Kesehatan;
 import com.google.firebase.database.DataSnapshot;
@@ -30,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RecordActivity extends Activity  implements View.OnClickListener{
+public class RecordActivity extends Activity  implements View.OnClickListener {
 
     private Spinner userDropdown;
     private TextView userId, userName, userUsername, userPhone, userAddress, userBirthDate, userPregnancyAge;
@@ -40,15 +42,15 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
     private Button bayiButton;
     private Button lansiaButton;
     private Button bumilButton;
-
-    private ImageView ivLogout, ivHome, ivReminder, ivProfile, ivSettings,ivChart;
+    private Button deleteUser;
+    private ImageView ivLogout, ivHome, ivReminder, ivProfile, ivSettings, ivChart;
     private DatabaseReference databaseReference;
     private Map<String, Map<String, String>> userDataMap = new HashMap<>();
     private ArrayList<String> userIds = new ArrayList<>();
-    private ArrayList<String> spinnerData= new ArrayList<>();
+    private ArrayList<String> spinnerData = new ArrayList<>();
     private String selectedUserId;
 
-    String url="https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
+    String url = "https://posyanduapps-76c23-default-rtdb.asia-southeast1.firebasedatabase.app/";
     private int option;
     private TextView tvTitle;
     private Intent intent;
@@ -81,7 +83,8 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         userBirthDate = findViewById(R.id.userBirthDate);
         userPregnancyAge = findViewById(R.id.userPregnancyAge);
         ivChart = findViewById(R.id.ivChart);
-        ivChart.setVisibility(View.GONE);
+        ivChart.setImageResource(R.drawable.superadmin);
+        deleteUser = findViewById(R.id.adminDeleteUser);
         new HeaderIconHelper(this, findViewById(R.id.header_layout));
         // Initialize Firebase Database
         databaseReference = FirebaseDatabase.getInstance(url).getReference("users");
@@ -106,13 +109,13 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         button_listener();
     }
 
-    private void button_listener(){
+    private void button_listener() {
         // Set listener untuk tombol bayi
         bayiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-              loadDataBayi(userId.getText().toString());
+                loadDataBayi(userId.getText().toString());
 
             }
         });
@@ -122,7 +125,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
             @Override
             public void onClick(View v) {
 
-              loadDataLansia(userId.getText().toString());
+                loadDataLansia(userId.getText().toString());
             }
         });
 
@@ -134,7 +137,15 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                 loadDataIbuHamil(userId.getText().toString());
             }
         });
+
+        deleteUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeleteConfirmationDialog(userDropdown.getSelectedItem().toString());
+            }
+        });
     }
+
     private void loadUsers() {
         databaseReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -147,8 +158,8 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                         String id = userSnapshot.getKey();
                         String nama = userSnapshot.child("nama_lengkap").getValue(String.class);
                         String roles = userSnapshot.child("roles").getValue(String.class);
-                        if (roles!=null){
-                            if (!roles.equalsIgnoreCase("admin")){
+                        if (roles != null) {
+                            if (!roles.equalsIgnoreCase("admin")) {
                                 String dataList = id + " - " + nama;
                                 Map<String, String> userData = (Map<String, String>) userSnapshot.getValue();
                                 userIds.add(id);
@@ -170,9 +181,9 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
     }
 
     private void loadDataBayi(String userId) {
-        Log.d("debug_old",userId);
+        Log.d("debug_old", userId);
         String[] parts = userId.split(": ");
-        String uid=parts[1].trim();
+        String uid = parts[1].trim();
         Log.d("debug_new", uid);  // Output: 3
         // Arahkan ke path bayi di Firebase
         databaseReference = FirebaseDatabase.getInstance(url).getReference("users").child(uid).child("data_user").child("bayi");
@@ -192,13 +203,13 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                         String tinggiBadan = detail.get("tinggi_badan");
                         String statusVaksin = detail.get("status_obat_vaksin");
                         String riwayatPenyakit = detail.get("riwayat_penyakit");
-                        String lingkarKepala =detail.get("lingkar_kepala");
+                        String lingkarKepala = detail.get("lingkar_kepala");
                         String lingkarLengan = detail.get("lingkar_lengan");
                         String lingkarperut = detail.get("lingkar_perut");
                         String tanggal = detail.get("tanggal");
                         String jam = detail.get("jam");
 
-                        Kesehatan kesehatan = new Kesehatan(nama, beratBadan, tinggiBadan, statusVaksin, riwayatPenyakit, lingkarKepala, lingkarLengan,lingkarperut,tanggal,jam);
+                        Kesehatan kesehatan = new Kesehatan(nama, beratBadan, tinggiBadan, statusVaksin, riwayatPenyakit, lingkarKepala, lingkarLengan, lingkarperut, tanggal, jam);
                         kesehatanList.add(kesehatan);
                     }
 
@@ -207,12 +218,11 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                     ListView listView = findViewById(R.id.listViewKesehatan);
                     listView.setAdapter(adapter);
                     Kategori.setText("Detail User - Bayi");
+                } else {
+                    // Jika data bayi kosong, tampilkan Toast
+                    Toast.makeText(getApplicationContext(), "Belum ada data bayi", Toast.LENGTH_SHORT).show();
+                    Log.d("Debug", "Belum ada data bayi di Firebase");
                 }
-                else {
-                        // Jika data bayi kosong, tampilkan Toast
-                        Toast.makeText(getApplicationContext(), "Belum ada data bayi", Toast.LENGTH_SHORT).show();
-                        Log.d("Debug", "Belum ada data bayi di Firebase");
-                    }
 
             }
 
@@ -226,9 +236,9 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
 
 
     private void loadDataLansia(String userId) {
-        Log.d("debug_old",userId);
+        Log.d("debug_old", userId);
         String[] parts = userId.split(": ");
-        String uid=parts[1].trim();
+        String uid = parts[1].trim();
         Log.d("debug_new", uid);  // Output: 3
         // Arahkan ke path lansia di Firebase
         databaseReference = FirebaseDatabase.getInstance(url).getReference("users").child(uid).child("data_user").child("lansia");
@@ -248,13 +258,13 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                         String tinggiBadan = detail.get("tinggi_badan");
                         String statusVaksin = detail.get("status_obat_vaksin");
                         String riwayatPenyakit = detail.get("riwayat_penyakit");
-                        String lingkarKepala =detail.get("lingkar_kepala");
+                        String lingkarKepala = detail.get("lingkar_kepala");
                         String lingkarLengan = detail.get("lingkar_lengan");
                         String lingkarperut = detail.get("lingkar_perut");
                         String tanggal = detail.get("tanggal");
                         String jam = detail.get("jam");
 
-                        Kesehatan kesehatan = new Kesehatan(nama, beratBadan, tinggiBadan, statusVaksin, riwayatPenyakit, lingkarKepala, lingkarLengan,lingkarperut,tanggal,jam);
+                        Kesehatan kesehatan = new Kesehatan(nama, beratBadan, tinggiBadan, statusVaksin, riwayatPenyakit, lingkarKepala, lingkarLengan, lingkarperut, tanggal, jam);
                         kesehatanList.add(kesehatan);
                     }
 
@@ -263,8 +273,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                     ListView listView = findViewById(R.id.listViewKesehatan);
                     listView.setAdapter(adapter);
                     Kategori.setText("Detail User - Lansia");
-                }
-                else {
+                } else {
                     // Jika data bayi kosong, tampilkan Toast
                     Toast.makeText(getApplicationContext(), "Belum ada data lansia", Toast.LENGTH_SHORT).show();
                     Log.d("Debug", "Belum ada data bayi di Firebase");
@@ -280,11 +289,13 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         });
     }
 
-    public void initializeview(){
+    public void initializeview() {
         ImageView choice = findViewById(R.id.ivChoice);
         choice.setVisibility(View.GONE);
         TextView tvChoice = findViewById(R.id.tvchoice);
         tvChoice.setVisibility(View.GONE);
+        ivChart = findViewById(R.id.ivChart);
+        ivChart.setImageResource(R.drawable.superadmin);
         ivHome = findViewById(R.id.ivHome);
         ivHome.setColorFilter(getResources().getColor(R.color.softBlue));  // Mengubah tint menjadi warna hitam
         ivReminder = findViewById(R.id.ivReminder);
@@ -296,14 +307,15 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
         ivReminder.setOnClickListener(this);
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
+        ivChart.setOnClickListener(this);
 
     }
 
 
     private void loadDataIbuHamil(String userId) {
-        Log.d("debug_old",userId);
+        Log.d("debug_old", userId);
         String[] parts = userId.split(": ");
-        String uid=parts[1].trim();
+        String uid = parts[1].trim();
         Log.d("debug_new", uid);  // Output: 3
         // Arahkan ke path ibu hamil di Firebase
         databaseReference = FirebaseDatabase.getInstance(url).getReference("users").child(uid).child("data_user").child("bumil");
@@ -323,13 +335,13 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                         String tinggiBadan = detail.get("tinggi_badan");
                         String statusVaksin = detail.get("status_obat_vaksin");
                         String riwayatPenyakit = detail.get("riwayat_penyakit");
-                        String lingkarKepala =detail.get("lingkar_kepala");
+                        String lingkarKepala = detail.get("lingkar_kepala");
                         String lingkarLengan = detail.get("lingkar_lengan");
                         String lingkarperut = detail.get("lingkar_perut");
                         String tanggal = detail.get("tanggal");
                         String jam = detail.get("jam");
 
-                        Kesehatan kesehatan = new Kesehatan(nama, beratBadan, tinggiBadan, statusVaksin, riwayatPenyakit, lingkarKepala, lingkarLengan,lingkarperut,tanggal,jam);
+                        Kesehatan kesehatan = new Kesehatan(nama, beratBadan, tinggiBadan, statusVaksin, riwayatPenyakit, lingkarKepala, lingkarLengan, lingkarperut, tanggal, jam);
                         kesehatanList.add(kesehatan);
                     }
 
@@ -338,8 +350,7 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
                     ListView listView = findViewById(R.id.listViewKesehatan);
                     listView.setAdapter(adapter);
                     Kategori.setText("Detail User - Bumil");
-                }
-                else {
+                } else {
                     // Jika data bayi kosong, tampilkan Toast
                     Toast.makeText(getApplicationContext(), "Belum ada data ibu hamil", Toast.LENGTH_SHORT).show();
                     Log.d("Debug", "Belum ada data bayi di Firebase");
@@ -355,7 +366,6 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
             }
         });
     }
-
 
 
     private void displayUserData(String userId) {
@@ -378,10 +388,29 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
 
         }
     }
-    private void ClearListViewData(){
+
+    private void ClearListViewData() {
         ListView listView = findViewById(R.id.listViewKesehatan);
         listView.setAdapter(null);
 
+    }
+
+    private void showDeleteConfirmationDialog(String userId) {
+        String [] splituid = userId.split(" - ");
+        new AlertDialog.Builder(this, R.style.AppTemaDialog)
+                .setTitle("Delete User")
+                .setMessage("Are you sure you want to delete this user " +userId+" ?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+
+                    // If the user confirms, proceed to delete the user
+                    deleteUser(splituid[0]);
+                })
+                .setNegativeButton("No", (dialog, which) -> {
+                    // If the user cancels, dismiss the dialog
+                    dialog.dismiss();
+                })
+                .create()
+                .show();
     }
 
     private void deleteUser(String userId) {
@@ -389,6 +418,9 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
             if (task.isSuccessful()) {
                 Toast.makeText(this, "User deleted successfully.", Toast.LENGTH_SHORT).show();
                 loadUsers(); // Refresh user list
+                Intent intent = new Intent(this, MonitorUsersActivity.class);
+                startActivity(intent);
+                finish();
             } else {
                 Toast.makeText(this, "Failed to delete user: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -397,31 +429,30 @@ public class RecordActivity extends Activity  implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == ivHome.getId()){
-            intent = new Intent(this, DashboardActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-            finish();
-        }
-        else if (v.getId() == ivReminder.getId()) {
+        if (v.getId() == ivHome.getId()) {
+
+        } else if (v.getId() == ivReminder.getId()) {
             intent = new Intent(this, PengingatActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
-        }
-        else if (v.getId() == ivSettings.getId()) {
+        } else if (v.getId() == ivSettings.getId()) {
             intent = new Intent(this, DataIbuActivity.class);
             startActivity(intent);
             overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
             finish();
-        }
-        else if (v.getId() == ivProfile.getId()) {
+        } else if (v.getId() == ivProfile.getId()) {
 
-                intent = new Intent(this, AbsensiActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-                finish();
+            intent = new Intent(this, AbsensiActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
 
+        } else if (v.getId() == ivChart.getId()) {
+            intent = new Intent(this, RegisterAdminActivity.class);
+            startActivity(intent);
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+            finish();
         }
     }
 }

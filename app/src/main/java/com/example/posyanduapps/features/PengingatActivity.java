@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.R;
 import com.example.posyanduapps.Helper.DatabaseHelper;
+import com.example.posyanduapps.RegisterAdminActivity;
 import com.example.posyanduapps.adapters.ReminderAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -106,8 +107,9 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
             TextView tvchoice = findViewById(R.id.tvchoice);
             tvchoice.setVisibility(View.GONE);
             ivProfile.setImageResource(R.drawable.baseline_assignment_add_24);
+            ivChart.setImageResource(R.drawable.superadmin);
             ivSettings.setVisibility(View.GONE);
-            ivChart.setVisibility(View.GONE);
+//            ivChart.setVisibility(View.GONE);
 
 
         }
@@ -349,10 +351,18 @@ public class PengingatActivity extends Activity implements View.OnClickListener 
             }
         }
         else if (v.getId() == ivChart.getId()) {
-            intent = new Intent(this, ChartActivity.class);
-            startActivity(intent);
-            overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
-            finish();
+            if(currentOption==4){
+                intent = new Intent(this, RegisterAdminActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                finish();
+            }else{
+                intent = new Intent(this, ChartActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+                finish();
+            }
+
         }
     }
 }

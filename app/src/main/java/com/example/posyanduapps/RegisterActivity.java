@@ -28,6 +28,7 @@ public class RegisterActivity extends Activity {
     private TextView etTanggalLahir;
     private Button btnDaftar;
     private ImageView exitButton;
+    private View layoutFooter;
 
     private String selectedTanggal;
     private String totalUserId;
@@ -52,6 +53,8 @@ public class RegisterActivity extends Activity {
         etPassword = findViewById(R.id.etPassword);
         btnDaftar = findViewById(R.id.btnDaftar);
         exitButton = findViewById(R.id.exitbutton);
+        layoutFooter = findViewById(R.id.layoutFooter);
+        layoutFooter.setVisibility(View.GONE);
     }
 
     private void setupListeners() {

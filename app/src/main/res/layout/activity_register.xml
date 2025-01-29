@@ -16,6 +16,7 @@
         android:layout_marginBottom="10dp">
 
         <TextView
+            android:id="@+id/tvRegister"
             android:layout_width="337dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -135,6 +136,7 @@
 
         <!-- Pilihan Status Kehamilan -->
         <TextView
+            android:id="@+id/tvUsiakehamilan"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Usia Kehamilan"
@@ -160,6 +162,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1"/>
             <TextView
+                android:id="@+id/tvUsiaKehamilanMinggu"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
@@ -192,7 +195,7 @@
 android:layout_width="match_parent"
 android:layout_height="wrap_content"
 android:gravity="center"
-    android:padding="10dp"
+android:padding="10dp"
 android:orientation="vertical">
     <Button
         android:id="@+id/btnDaftar"
@@ -204,4 +207,11 @@ android:orientation="vertical">
 
         />
 </LinearLayout>
+    <include
+        android:id="@+id/layoutFooter"
+        layout="@layout/footer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
 </LinearLayout>

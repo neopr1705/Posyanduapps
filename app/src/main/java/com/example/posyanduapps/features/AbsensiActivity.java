@@ -26,6 +26,7 @@ import com.example.posyanduapps.Helper.HeaderIconHelper;
 import com.example.posyanduapps.LoginActivity;
 import com.example.posyanduapps.MainActivity;
 import com.example.posyanduapps.R;
+import com.example.posyanduapps.RegisterAdminActivity;
 import com.example.posyanduapps.adapters.AbsensiAdapter;
 import com.example.posyanduapps.models.Absensi;
 import com.google.firebase.database.DataSnapshot;
@@ -129,7 +130,8 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
         ivSettings.setVisibility(View.GONE);
         new HeaderIconHelper(this, findViewById(R.id.header_layout));
         ivChart = findViewById(R.id.ivChart);
-        ivChart.setVisibility(View.GONE);
+        ivChart.setImageResource(R.drawable.superadmin);
+//        ivChart.setVisibility(View.GONE);
         kategoriList = new ArrayList<>();
         kategoriList.add("Bayi");
         kategoriList.add("Lansia");
@@ -210,7 +212,7 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
 
         ivHome.setOnClickListener(this);
         ivReminder.setOnClickListener(this);
-
+        ivChart.setOnClickListener(this);
         ivProfile.setOnClickListener(this);
         ivSettings.setOnClickListener(this);
     }
@@ -405,10 +407,16 @@ public class AbsensiActivity extends Activity implements View.OnClickListener {
             intent = new Intent(this, DataIbuActivity.class);
         } else if (v.getId() == ivProfile.getId()) {
             intent = new Intent(this, EdukasiBumilActivity.class);
-        } else {
+        } else if (v.getId() == ivChart.getId()) {
+
+            intent = new Intent(this, RegisterAdminActivity.class);
+
+        }else {
             return;
         }
         startActivity(intent);
         overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
+        finish();
+
     }
 }
