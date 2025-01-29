@@ -34,6 +34,7 @@ public class ReminderAdapter extends ArrayAdapter<String> {
     private Handler mainHandler;
     private int currentOption;
     boolean initialSwitchState ;
+    private String id="1";
 
     public ReminderAdapter(Context context, List<String> reminders) {
         super(context, 0, reminders);
@@ -57,6 +58,8 @@ public class ReminderAdapter extends ArrayAdapter<String> {
         if (reminder == null || reminder.isEmpty()) {
             return convertView;
         }
+
+
         // Extract and display data
         TextView tvTitleNama = convertView.findViewById(R.id.tvTitleNamaAlarm);
         TextView tvReminderName = convertView.findViewById(R.id.tvNamaAlarm);
@@ -66,6 +69,11 @@ public class ReminderAdapter extends ArrayAdapter<String> {
         TextView tvReminderPlace = convertView.findViewById(R.id.tvTempatAlarm);
         Switch swAktif = convertView.findViewById(R.id.swAktif);
         LinearLayout HolderSwitch = convertView.findViewById(R.id.HolderSwitch);
+
+        // Ambil status switch berdasarkan ID alarm
+        SharedPreferences AlarmSP = getContext().getSharedPreferences("AlarmPreferences", Context.MODE_PRIVATE);
+        boolean isAlarmActive = AlarmSP.getBoolean("alarm_status_" + reminder, false); // Default false jika tidak ada data
+        swAktif.setChecked(isAlarmActive);
         SharedPreferences sharedPreferences = getContext().getSharedPreferences("userPrefs", Context.MODE_PRIVATE);
         String roles = sharedPreferences.getString("currentRoles","");
         if (roles.equalsIgnoreCase("admin")) {
@@ -76,12 +84,12 @@ public class ReminderAdapter extends ArrayAdapter<String> {
 
 
         String[] parts = reminder.split(";");
-        if (parts.length >= 4) {
+        if (parts.length >= 5) {
             String name = getDataFromPart(parts[0]);
             String date = getDataFromPart(parts[1]);
             String day = getDataFromPart(parts[2]);
             String place = getDataFromPart(parts[3]);
-            String time = parts.length > 4 ? getDataFromPart(parts[4]).replace(".", ":") : "";
+            String time = parts.length >= 5 ? getDataFromPart(parts[4]).replace(".", ":") : "";
 
             tvReminderName.setText(name);
             tvReminderDate.setText(date);
@@ -93,19 +101,24 @@ public class ReminderAdapter extends ArrayAdapter<String> {
 
         // Switch listener to activate/deactivate alarm
         swAktif.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            // Store the initial state of the switch
-          initialSwitchState = swAktif.isChecked();
+            // Simpan status switch untuk setiap alarm berdasarkan ID unik
+            SharedPreferences AlarmPref = getContext().getSharedPreferences("AlarmPreferences", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = AlarmPref.edit();
+            editor.putBoolean("alarm_status_" + reminder, isChecked);  // Gunakan ID atau identifier unik untuk setiap alarm
+            editor.apply(); // J
 
             if (isChecked) {
                             // Assuming reminder contains both date and time in "tanggal;jam" format
+                            LogDebug(""+reminder);
                             String[] reminderParts = reminder.split(";");
-                            String tanggal = reminderParts[0]; // First part is the date
-                            String jam = reminderParts[1];     // Second part is the time
-                            String id= tvReminderName.getText().toString()+tvReminderDate.getText().toString()+tvReminderDay.getText().toString()+tvReminderPlace.getText().toString();
-                            int newid = id.hashCode();
-                            LogDebug(""+newid);
+                            String tanggal = reminderParts[1]; // First part is the date
+                            String jam = reminderParts[4];     // Second part is the time
+                            String Hari = reminderParts[2];
+                            id = reminderParts [0];
+                            String tempat = reminderParts [3];
+                            LogDebug(id+tanggal+Hari+tempat+jam);
                             executorService.submit(() -> {
-                                boolean alarmSet = databaseHelper.insertAlarm(newid,tanggal, jam, 1); // 1 means active
+                                boolean alarmSet = databaseHelper.insertAlarm((id.hashCode()),tanggal, jam, 1); // 1 means active
                                 mainHandler.post(() -> {
                                     if (alarmSet) {
                                         setAlarm(reminder);
@@ -121,13 +134,10 @@ public class ReminderAdapter extends ArrayAdapter<String> {
 
                     executorService.submit(() -> {
                         mainHandler.post(() -> {
-                            boolean isDeleted = databaseHelper.deleteAlarm((tvReminderName.getText().toString() + tvReminderDate.getText().toString() + tvReminderDay.getText().toString() + tvReminderPlace.getText().toString()).hashCode());
+                            boolean isDeleted = databaseHelper.deleteAlarm(id.hashCode());
                             if (isDeleted) {
                                 Toast.makeText(getContext(), "Alarm berhasil dihapus!", Toast.LENGTH_SHORT).show();
-                                // Update the data and notify the adapter to refresh the list
-//                                deleteAlarm(reminder);
-
-//                                removeReminder(reminder);
+                                    deleteAlarm(reminder);
                             } else {
                                 Toast.makeText(getContext(), "Gagal hapus alarm!", Toast.LENGTH_SHORT).show();
                             }
@@ -157,9 +167,14 @@ public class ReminderAdapter extends ArrayAdapter<String> {
         String[] parts = reminder.split(";");
         if (parts.length < 5) return;
         AlarmHelper alarmHelper = new AlarmHelper(getContext());
-        alarmHelper.cancelAlarm(parts[0]+"\n"+parts[1]+"\n"+parts[2]+"\n"+parts[3]);
+        alarmHelper.cancelAlarm(parts[0]);
         Log.d("ReminderAdapter", "Canceled alarm with id: "+(parts[0]+"\n"+parts[1]+"\n"+parts[2]+"\n"+parts[3]).hashCode());
-
+        boolean deleted = databaseHelper.deleteAlarm(parts[0].hashCode()); // Hapus berdasarkan ID yang hashCode
+        if (deleted) {
+            Log.d("ReminderAdapter", "Alarm dengan id " + parts[0] + " berhasil dihapus.");
+        } else {
+            Log.d("ReminderAdapter", "Gagal menghapus alarm dengan id: " + parts[0]);
+        }
 
     }
     private void setAlarm(String reminder) {
@@ -187,7 +202,8 @@ public class ReminderAdapter extends ArrayAdapter<String> {
 
         // Jika izin sudah diberikan, lanjutkan menyetel alarm
         AlarmHelper alarmHelper = new AlarmHelper(getContext());
-        alarmHelper.setAlarm(hour, minute, (parts[0] + "\n" + parts[1] + "\n" + parts[2] + "\n" + parts[3]));
+        LogDebug(""+reminder);
+        alarmHelper.setAlarm(parts[0],hour, minute, ("Kontrol Posyandu\n" + parts[1] + " - " + parts[2] + " - " + parts[3])+" - "+parts[4]);
     }
 
 
@@ -198,4 +214,5 @@ public class ReminderAdapter extends ArrayAdapter<String> {
     private void LogDebug(String message){
     Log.d("debug now",message);
     }
+
 }

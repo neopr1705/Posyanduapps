@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.posyanduapps.R;
@@ -22,40 +23,55 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getStringExtra("ACTION");
 
-        // Menangani aksi berdasarkan intent
+        Log.d("AlarmReceiver", "onReceive: ACTION = " + action); // Tambahkan log untuk debugging
+
         if (action != null) {
-            handleAction(context, action, intent);
+            handleAction(context, action);
         } else {
-            // Jika tidak ada aksi, berarti alarm baru diterima
             handleNewAlarm(context, intent);
         }
     }
 
-    private void handleAction(Context context, String action, Intent intent) {
+    private void handleAction(Context context, String action) {
+        Log.d("AlarmReceiver", "handleAction: Received action = " + action); // Tambahkan log untuk melihat action yang diterima
+
         if ("OFF".equals(action)) {
             turnOffAlarm(context);
         } else if ("OK".equals(action)) {
             keepAlarmActive(context);
+        } else {
+            Log.d("AlarmReceiver", "Unknown action: " + action); // Menangani aksi yang tidak dikenal
         }
     }
 
     private void turnOffAlarm(Context context) {
+        Log.d("AlarmReceiver", "Turning off the alarm"); // Tambahkan log saat mematikan alarm
         stopAlarmSound();
         cancelNotification(context);
+        cancelAlarm(context);
         showToast(context, "Alarm dimatikan");
     }
 
+    private void cancelAlarm(Context context) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent cancelIntent = new Intent(context, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, cancelIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent); // Membatalkan alarm
+        }
+    }
+
     private void keepAlarmActive(Context context) {
+        Log.d("AlarmReceiver", "Keeping the alarm active"); // Tambahkan log saat alarm tetap aktif
         showToast(context, "Alarm tetap aktif");
     }
 
     private void handleNewAlarm(Context context, Intent intent) {
         String message = intent.getStringExtra("ALARM_MESSAGE");
-        String alarmTime = intent.getStringExtra("ALARM_TIME");
 
         showToast(context, "Alarm: " + message);
         playAlarmSound(context);
-        showNotification(context, message, alarmTime);
+        showNotification(context, message);
     }
 
     private void playAlarmSound(Context context) {
@@ -76,10 +92,10 @@ public class AlarmReceiver extends BroadcastReceiver {
 
     private void cancelNotification(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.cancel(1); // Menghilangkan notifikasi dengan ID 1
+        notificationManager.cancel(0); // Menghilangkan notifikasi tanpa menggunakan alarmID
     }
 
-    private void showNotification(Context context, String message, String alarmTime) {
+    private void showNotification(Context context, String message) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -91,8 +107,9 @@ public class AlarmReceiver extends BroadcastReceiver {
             notificationManager.createNotificationChannel(channel);
         }
 
-        PendingIntent offPendingIntent = createPendingIntent(context, "OFF");
-        PendingIntent okPendingIntent = createPendingIntent(context, "OK");
+        // Gunakan requestCode yang berbeda untuk membedakan pending intents
+        PendingIntent offPendingIntent = createPendingIntent(context, "OFF", 1);  // Gunakan 1 untuk OFF
+        PendingIntent okPendingIntent = createPendingIntent(context, "OK", 2);    // Gunakan 2 untuk OK
 
         Notification notification = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -106,14 +123,15 @@ public class AlarmReceiver extends BroadcastReceiver {
                     .build();
         }
 
-        notificationManager.notify(1, notification);
+        notificationManager.notify(0, notification); // Gunakan angka 0 untuk notifikasi default
     }
 
-    private PendingIntent createPendingIntent(Context context, String action) {
+    private PendingIntent createPendingIntent(Context context, String action, int requestCode) {
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("ACTION", action);
-        return PendingIntent.getBroadcast(context, action.equals("OFF") ? 0 : 1, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
+
 
     private void showToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();

@@ -15,14 +15,14 @@ public class AlarmHelper {
         this.context = context;
     }
 
-    public void setAlarm(int hour, int minute, String message) {
+    public void setAlarm(String id,int hour, int minute, String message) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("ALARM_MESSAGE", message);
-
+        intent.putExtra("ALARM_ID", id);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                context,Integer.parseInt(id), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, hour);
@@ -30,7 +30,7 @@ public class AlarmHelper {
         calendar.set(Calendar.SECOND, 0);
 
         if (alarmManager != null) {
-            Log.d("AlarmHelper", "Setting alarm for: "+message + hour + ":" + minute);
+            Log.d("AlarmHelper", "Setting alarm for: "+intent.getStringExtra("ALARM_ID") + hour + ":" + minute);
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         }
     }
@@ -41,9 +41,8 @@ public class AlarmHelper {
         // Menggunakan message.hashCode() sebagai ID unik untuk PendingIntent
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra("ALARM_MESSAGE", message);
-
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                context, message.hashCode(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                context, Integer.parseInt(message), intent, PendingIntent.FLAG_CANCEL_CURRENT| PendingIntent.FLAG_IMMUTABLE);
 
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
